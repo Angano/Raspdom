@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    
+    <div class="col-md-6 mx-auto">
+        <h4>liste catégories appareil</h4>
+        <table class="table  bg-light">
+            <thead>
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Nbre entrées</th>
+                    <th>Nbre Sorties</th>
+                    <th>Modèle d'appareils</th>
+                </tr>
+            </thead>
+            <tbody>{% for categorie_appareil in categories_appareil %}
+                <tr>
+                    
+                    <td>{{ categorie_appareil.nom }}</td>
+                    <td>{{ categorie_appareil.nbre_entre }}</td>
+                    <td>{{ categorie_appareil.nbre_sortie }}</td>
+                    <td>{{ categorie_appareil.appareils}}</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+

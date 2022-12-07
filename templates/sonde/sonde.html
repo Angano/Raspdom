@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    {% for ds1820b in sondes %}
+    <p><a href="{{url_for('edit_sonde',sonde_id=ds1820b.id)}}">{{ds1820b.nom}}</a> {{ds1820b.info}} <input type="text" readonly id="sonde_{{ds1820b.id}}" placeholder="{{ds1820b.sonde_valeur_id.valeur}}"></p>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

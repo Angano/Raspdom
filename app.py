@@ -38,9 +38,15 @@ def user_load(user_id):
 @login_required
 def index():
     appareils = Appareil.query.all()
+    # Récupération des instances des appareils en cours
+    labels = dict()
+    #labels = [(data.categorieappareil, globals()[data.categorieappareil].label.__doc__) for data in appareils]
+    for dati in appareils:
+        labels[dati.categorieappareil]=(globals()[dati.categorieappareil].label.__doc__)
+    print(labels)
     gpios = Gpio.query.order_by('appareil_id').all()
     programmations = Programmation.query.order_by('appareil').all()
-    return render_template('index.html', appareils=appareils, gpios=gpios, programmations=programmations)
+    return render_template('index.html', appareils=appareils, gpios=gpios, programmations=programmations, labels=labels)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -133,8 +139,8 @@ def appareil():
         appareil.label = instance_appareil.label.__doc__
         db.session.add(appareil)
         db.session.commit()
-        mode_de_marche.appareil_id=appareil.id
 
+        mode_de_marche.appareil_id=appareil.id
         db.session.add(mode_de_marche)
         db.session.commit()
 
@@ -258,7 +264,7 @@ def edit_appareil(appareil_id):
         appareilform.sondes.append_entry(sondeform)
 
     #appareilform.categorie_appareil_id.choices = [(data.id, data.nom) for data in Categorieappareil.query.all()]
-    return render_template('appareil/appareil.html', appareilform=appareilform, gpios=gpios)
+    return render_template('appareil/appareil.html', appareilform=appareilform, gpios=gpios, appareil=appareil, isSonde=instance_appareil.sonde)
 
 @app.route('/appareils')
 def appareils():
@@ -312,12 +318,11 @@ def test(appareil_id):
         else:
             print('no commi')
 
-
     else:
         sondeform = False
         print('no form')
-    instance_appareil = globals()[appareil.categorieappareil](appareil)
 
+    instance_appareil = globals()[appareil.categorieappareil](appareil)
     mode_de_marche = ModeDeMarche.query.filter_by(appareil_id=appareil_id).first()
 
     mode_de_marcheform = ModeDeMarcheForm(obj=mode_de_marche, data=request.form)
@@ -345,20 +350,22 @@ def test(appareil_id):
     tab = []
     for gpio in appareil.gpios:
         var = gpio.valeur.split('_')[1]
-        data = os.popen(f'raspi-gpio get {var}')
-        dati = data.read()
+        try:
+            data = os.popen(f'raspi-gpio get {var}')
+            dati = data.read()
 
-        mode = dati.find('func=')+5
-        popo = dati.find('level=')
-        
+            mode = dati.find('func=')+5
+            popo = dati.find('level=')
 
-        toto = {
-            'gpio':dati[5:popo-2],
-            'mode':dati[mode:mode+6],
-            'level':dati[popo+6],
-            'info': gpio.info
-        }
-        tab.append(toto)
+            toto = {
+                'gpio':dati[5:popo-2],
+                'mode':dati[mode:mode+6],
+                'level':dati[popo+6],
+                'info': gpio.info
+            }
+            tab.append(toto)
+        except:
+            print('no ds1820b')
     return render_template('appareil/appareil_test.html', tab=tab, sondeform=sondeform, appareils=appareils, appareil=appareil, instance_appareil=instance_appareil, mode_de_marcheform=mode_de_marcheform, modedemarche=instance_appareil.choices_mdm, programmations=programmations)
 
 

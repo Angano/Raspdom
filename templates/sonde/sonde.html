@@ -1,10 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    {% for ds1820b in sondes %}
-    <p><a href="{{url_for('edit_sonde',sonde_id=ds1820b.id)}}">{{ds1820b.nom}}</a> {{ds1820b.info}} <input type="text" readonly id="sonde_{{ds1820b.id}}" placeholder="{{ds1820b.sonde_valeur_id.valeur}}"></p>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+
+        {% for ds1820b in sondes %}
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Nom:  {{ds1820b.nom}}</div>
+            <div class="card-body">
+
+                <p>Info: {{ds1820b.info}}</p>
+                <p> Valeur actuelle: {{ds1820b.sonde_valeur_id.valeur}} °C</p>
+                <p>Type: {{ds1820b.type_sonde}}</p>
+                <p>Présente: {{ds1820b.present}}</p>
+                <p>En service: {{ds1820b.en_service}}</p>
+            </div>
+            <div class="card-footer text-end">
+               <a class="btn btn-sm btn-primary" href="{{url_for('edit_sonde',sonde_id=ds1820b.id)}}">Edition</a>
+            </div>
+        </div> </div>
     {% endfor %}
+
+
 </div>
 
 

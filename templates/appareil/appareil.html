@@ -2,54 +2,87 @@
 
 {% block content %}
 <div class="row">
-    {% if gpios %}
-    <div class="col-md-4 mx-auto">
-        <h4>Liste des GPIO utilisés</h4>
-    <ul>
-        {% for gpio in gpios %}
-        <li>{{gpio.nom}} &nbsp; {{gpio.valeur}} &nbsp; {{gpio.mode}} &nbsp;{{gpio.appareil.nom}}</li>
-        {% endfor %}
-    </ul>
+
+    <div class="col-md-10 mx-auto ">
+        <div class="card">
+            <div class="card-header"><h3>Création d'un appareil</h3></div>
+            <div class="card-body">
+
+                <form action="" method="post">
+                    <div class="row">
+                        <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">Information</div>
+                                    <div class="card-body d-flex justify-content-between">
+                                        {{ appareilform.csrf_token }}
+                                        <div>{{appareilform.nom.label}}{{appareilform.nom}}</div>
+                                            <div>{{appareilform.description.label}}{{appareilform.description}}</div>
+                                        <div>Catégorie de l'appareil: {{appareilform.categorieappareil}}</div>
+
+                                    </div>
+
+                    </div>
+                        </div>
+                    </div>
+                    {% if appareilform.gpios %}
+                    <div class="row">
+                        <div class="col-12">
+
+                                <div class="card">
+                                    <div class="card-header">GpioS</div>
+                                    <div class="d-flex justify-content-around card-body">
+                                        {% for data in appareilform.gpios %}
+                                            <div class="">{{data}}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+ {% endif %}
+
+
+
+
+                    {% if isSonde %}
+                    <div class="row">
+                        <div class="col-12">
+
+
+
+
+                         <div class="card ">
+                        <div class="card-header">Sondes</div>
+                        <div class="card-body">
+                        {% for data in appareilform.sondes %}
+                          <p>{{data.csrf_token}}</p>
+                            <div class="d-flex justify-content-center">
+
+                                 <p>{{data.capteur.label}} {{data.capteur}}</p>
+                                 <p>{{data.min.label}}  {{data.min}} {{data.max.label}}  {{data.max}}</p>
+                                <p>{{data.unite.label}} {{data.unite}} {{data.en_service.label}}  {{data.en_service}}</p>
+
+                            </div>
+
+                        {% endfor %}
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+
+                    {% endif %}
+
+
+                        <div class="text-center mx-auto my-4">
+                            <input class="btn btn-success" type="submit" value="Enregistrer">
+                        </div>
+
+
+                </form>
+            </div>
     </div>
-    {% endif %}
-    <div class="col-md-6 mx-auto  bg-light">
-        <h4>Création appareil</h4>
-        <hr>
+        </div>
 
-            <form action="" method="post">
-                {{ appareilform.csrf_token }}
-                <p>{{appareilform.nom.label}}{{appareilform.nom}} {{appareilform.description.label}}{{appareilform.description}}</p>
-                <p>{{appareilform.categorieappareil.label}}{{appareilform.categorieappareil}}</p>
-
-                <hr>
-                <h5>GpioS</h5>
-                <div class="d-flex">
-                    {% for data in appareilform.gpios %}
-                    <div>{{data}}</div>
-                    {% endfor %}
-                </div>
-                <hr>
-
-                <h5>Sondes</h5>
-                  <div>
-
-                    {% for data in appareilform.sondes %}
-
-                      <p>{{data.csrf_token}}</p>
-                      <p>{{data.capteur.label}} {{data.capteur}}</p>
-                        <p>{{data.min.label}}  {{data.min}} {{data.max.label}}  {{data.max}}</p>
-                        <p>{{data.unite.label}} {{data.unite}} {{data.en_service.label}}  {{data.en_service}}</p>
-                      <p>Type des sonde </p>
-
-                    {% endfor %}
-                </div>
-                {% for field in mode_de_marcheform %}
-                <p>{{field}}</p>
-                {% endfor %}
-                <hr>
-                <input type="submit">
-            </form>
-    </div>
 </div>
 
 {% endblock %}

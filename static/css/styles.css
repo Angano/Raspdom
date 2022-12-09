@@ -10833,3 +10833,10 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+.container-fluid{
+    background-image:url('../assets/domo.jpg');
+    background-size:cover;
+    background-repeat:no-repeat;
+
+}

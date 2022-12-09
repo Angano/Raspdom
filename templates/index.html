@@ -1,72 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3 mx-auto  bg-light">
-        <h3>Appareil</h3>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Catégorie</th>
-            <th>Mode de marche</th></tr>
-            </thead>
-            <tbody>
+<div class="row row-cols-1 row-cols-md-4 g-4">
             {% for appareil in appareils %}
-            <tr>
-                <td><a href="{{url_for('test', appareil_id=appareil.id)}}">{{appareil.nom}}</a></td>
-                <td>{{appareil.categorieappareil}}</td>
-                <td>{{appareil.mode_de_marche.mode_de_marche}}</td>
-            </tr>
+
+  <div class="col">
+    <div class="card">
+     <div class="card-header">{{appareil.nom}} - {{labels[appareil.categorieappareil]}}</div>
+      <div class="card-body">
+
+
+                <p class="card-text">Description:{{appareil.description}}</p>
+                <p class="card-text">Mode de Marche: <b>{{appareil.mode_de_marche.mode_de_marche}}</b></p>
+
+                <p class="card-text">{% if appareil.appareil_sonde.sonde_valeur_id %}
+                    T°: {{appareil.appareil_sonde.sonde_valeur_id.valeur}} {{appareil.appareil_sonde.unite}}
+                    {% endif %}
+                </p>
+      </div>
+        <div class="card-footer">
+            <p class="text-muted"><a target="_blanck" href="{{url_for('test', appareil_id=appareil.id)}}">Détail</a></p>
+        </div>
+    </div>
+  </div>
+
             {% endfor %}
-            </tbody>
-
-        </table>
-        <div><a href="{{url_for('appareil')}}" class="btn btn-sm btn-success">Add appareil</a></div>
-     </div>
-    <div class="col-md-3 mx-auto  bg-light">
-    <h3>Gpios</h3>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Valeur</th>
-                <th>Mode</th>
-
-            <th>Appareil</th></tr>
-            </thead>
-            <tbody>
-            {% for gpio in gpios %}
-            <tr><td><a href="{{url_for('edit_gpio',gpio_id=gpio.id)}}">{{gpio.nom}}</a></td><td>{{gpio.valeur}}</td><td>{{gpio.mode}}</td><td>{{gpio.appareil.nom}}</td></tr>
-            {% endfor %}
-            </tbody>
-
-        </table>
-
-     </div>
-        <div class="col-md-3 mx-auto  bg-light">
-        <h3>Programmation</h3>
-             <table class="table">
-            <thead>
-            <tr>
-                <th>Appareil</th>
-                <th>Day</th>
-                <th>Start</th>
-                <th>End</th></tr>
-            </thead>
-            <tbody>
-            {% for programmation in programmations %}
-            <tr>
-                <td><a href="{{url_for('edit_programmation', programmation_id=programmation.id)}}">{{programmation.appareil_programmation.nom}}</a></td>
-                <td>{{programmation.day}}</td>
-                <td>{{programmation.start}}:{{programmation.start_min}}</td>
-               <td>{{programmation.end}}:{{programmation.end_min}}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-
-        </table>
-        <div><a href="{{url_for('add_programmation')}}" class="btn btn-sm btn-success">Add Programmation</a></div>
-     </div>
- </div>
+</div>
 {% endblock %}

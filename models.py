@@ -18,7 +18,7 @@ class Appareil(db.Model):
     mode_de_marche = db.relationship('ModeDeMarche', uselist=False,  backref='appareil_mode_de_marche', lazy=True)
     auto = db.relationship('Auto', uselist=False, backref='appareil_auto', lazy=True)
     sonde_id = db.Column(db.Integer, db.ForeignKey('sonde.id'))
-    #sonde = db.relationship('Sonde', uselist=False, backref='appareil_sonde', lazy=True)
+    sonde = db.relationship('Sonde', uselist=False, backref='appareil_sonde', lazy=True)
     manuel = db.relationship('Manuel', uselist=False, backref='appareil_ordre', lazy=True)
     label = db.Column(db.String(250))
 
@@ -86,7 +86,7 @@ class Gpio(db.Model):
     valeur = db.Column(db.String(10))
     info = db.Column(db.String(200))
     appareil_id = db.Column(db.Integer, db.ForeignKey('appareil.id'), nullable=True, default='')
-    
+    #gpiobcm_id = db.Column(db.Integer, db.ForeignKey('gpiobcm.id'), nullable=False, default='')
     
     # get choice of gpio free with gpio select for instance
     def get_free_gpio(self):
@@ -117,6 +117,8 @@ class GpioBcm(db.Model):
     name = db.Column(db.String(10))
     mode = db.Column(db.String(10), default='Input')
     status = db.Column(db.Boolean, default=False)
+    #gpios = db.relationship('Gpio', backref='gpiobcm', lazy=True)
+
     
     
 class CategorieCapteur(db.Model):

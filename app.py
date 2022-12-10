@@ -40,13 +40,15 @@ def index():
     appareils = Appareil.query.all()
     # Récupération des instances des appareils en cours
     labels = dict()
+    instances = list()
     #labels = [(data.categorieappareil, globals()[data.categorieappareil].label.__doc__) for data in appareils]
-    for dati in appareils:
-        labels[dati.categorieappareil]=(globals()[dati.categorieappareil].label.__doc__)
-    print(labels)
+    for appareil in appareils:
+        instances.append({'modelAppareil':appareil,'instanceAppareil':(globals()[appareil.categorieappareil])})
+
     gpios = Gpio.query.order_by('appareil_id').all()
     programmations = Programmation.query.order_by('appareil').all()
-    return render_template('index.html', appareils=appareils, gpios=gpios, programmations=programmations, labels=labels)
+
+    return render_template('index.html', appareils=appareils, gpios=gpios, programmations=programmations, instances=instances)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -561,7 +563,21 @@ def edit_programmation_from_appareil(programmation_id):
 
 
     return render_template('programmation/programmation.html',programmationform=form)
+@app.route('/api/programmation/<int:id>', methods=['get'])
+def api_programmation(id):
+    programmation = Programmation.query.filter_by(appareil=id).all()
 
+    datas= dict()
+    for data in programmation:
+        datas[data.id] = {
+            'heure_debut':data.start,
+            'minute_debut':data.start_min,
+            'heure_fin':data.end,
+            'min_fin':data.end_min,
+            'day':data.day
+        }
+
+    return jsonify(datas)
 
 if __name__ == '__main__':
     app.debug = True

@@ -3,17 +3,8 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-2 bg-light py-3">
-            <h6>
-                Listes appareils
-            </h6>
-            <ul>
-                {% for appareil in appareils %}
-                <li><a href="{{url_for('test', appareil_id=appareil.id)}}">{{appareil.nom}}</a> {{appareil.categorieappareil}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-md-7">
+
+        <div class="col-md-8 card">
             <div class="row">
                 <div class="col-md-11 mx-auto">
                     <h4>{{appareil.nom}} {{appareil.categorieappareil}}</h4>
@@ -85,7 +76,7 @@
 
                                                    </div>
                                                 {% endif %}
-                                               
+
                                                 </form>
                                                
                                                 
@@ -119,7 +110,7 @@
                 </div>
             </div>
         </div>    
-        <div class="col-md-3 bg-light py-3">
+        <div class="col-md-3 card  py-3">
             <h6>
                 Listes des programmations
             </h6>

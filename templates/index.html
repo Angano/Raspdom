@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row row-cols-1 row-cols-md-4 g-4">
+<div class="row row-cols-1 row-cols-md-4 g-4 d-none">
             {% for appareil in appareils %}
 
   <div class="col">
     <div class="card">
-     <div class="card-header">{{appareil.nom}} - {{labels[appareil.categorieappareil]}}</div>
+     <div class="card-header">{{appareil.nom}} - {{appareil.label}}</div>
       <div class="card-body">
-
-
                 <p class="card-text">Description:{{appareil.description}}</p>
                 <p class="card-text">Mode de Marche: <b>{{appareil.mode_de_marche.mode_de_marche}}</b></p>
 
@@ -23,7 +21,84 @@
         </div>
     </div>
   </div>
-
             {% endfor %}
 </div>
+
+<div class="row row-cols-1 row-cols-md-3 pb-2 g-4">
+    {% for instance in instances %}
+      <div class="col">
+    <div class="card">
+
+        <div class="card-header d-flex justify-content-between">
+            <div>
+                <h2>{{instance.modelAppareil.nom}}</h2>
+                <small>{{instance.instanceAppareil.label.__doc__}}</small>
+            </div>
+            <div>
+                {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
+                    <span class="btn btn-sm btn-warning">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }} {{instance.modelAppareil.appareil_sonde.unite }}</span>
+                {% endif %}
+            </div>
+
+
+        </div>
+        <div class="card-body ">
+            <div>
+                <span class="btn btn-sm btn-secondary md-btn-display">+</span>
+                <select name="" id="" class="btn btn-sm btn-primary">
+                    {% for data in instance.instanceAppareil.choices_mdm %}
+                    <option value="{{data[0]}}" {% if data[0]==instance.modelAppareil.mode_de_marche.mode_de_marche %} selected="" {% endif %}>{{data[1]}}</option>
+                    {% endfor %}
+                </select>
+                {% if instance.modelAppareil.mode_de_marche.mode_de_marche=="prog" %}
+                    <span class="btn btn-sm btn-primary">Programmations ({{instance.modelAppareil.programmations|length}})</span>
+                {% endif %}
+                  <table class="table" style="display:none">
+                <thead>
+                    <tr><th>Instance</th><th>Model</th></tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><span data-appareil="{{instance.modelAppareil.id}}" class="btn btn-sm btn-primary">Programmations</span></td><td>{{instance.modelAppareil.programmations}}</td>
+                    </tr>
+                        {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id is defined %}
+                    <tr>
+                        <td>temps min-max</td><td>Min:{{instance.modelAppareil.appareil_sonde.min}} - Max:{{instance.modelAppareil.appareil_sonde.max}} - {{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }}</td>
+                    </tr>
+                    {% endif %}
+
+
+                    <tr>
+                        <td>gpio</td><td>{% for gpio in instance.modelAppareil.gpios%}
+                        <p>{{gpio.nom}} - {{gpio.mode}} - {{gpio.info}} - {{gpio.valeur}}</p>
+                        {% endfor%}</td>
+                    </tr>
+                    <tr>
+                        <td>gpio order</td><td>{{instance.modelAppareil.order_gpio}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+        </div>
+        <div class="card-footer text-end">
+            <a href="" class="btn btn-sm btn-primary ">Détail</a>
+        </div>
+    </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $('.md-btn-display').on('click',function(e){
+        $($(e.target).siblings('table')).toggle()
+    })
+
+    $('span[data-appareil]').on('click',function(e){
+        console.log(e.target.dataset['appareil'])
+    })
+</script>
 {% endblock %}

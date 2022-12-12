@@ -560,24 +560,37 @@ def edit_programmation_from_appareil(programmation_id):
         form.populate_obj(programmation)
         db.session.add(programmation)
         db.session.commit()
-
-
     return render_template('programmation/programmation.html',programmationform=form)
+
 @app.route('/api/programmation/<int:id>', methods=['get'])
 def api_programmation(id):
-    programmation = Programmation.query.filter_by(appareil=id).all()
-
+    programmation = Programmation.query.order_by('day').filter_by(appareil=id).all()
     datas= dict()
     for data in programmation:
         datas[data.id] = {
             'heure_debut':data.start,
-            'minute_debut':data.start_min,
+            'min_debut':data.start_min,
             'heure_fin':data.end,
             'min_fin':data.end_min,
             'day':data.day
         }
+    return (datas)
 
-    return jsonify(datas)
+@app.route('/api/mdm/<int:id>', methods=['post','get'])
+def api_mdm(id):
+    form = request.form
+    if request.method == 'POST':
+        print(request.form['mdm'])
+        print(request.method)
+        appareil = Appareil.query.get(id)
+        appareil.mode_de_marche.mode_de_marche = request.form['mdm']
+        db.session.add(appareil)
+        db.session.commit()
+
+
+    
+    return render_template('test.html')
+
 
 if __name__ == '__main__':
     app.debug = True

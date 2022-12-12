@@ -24,7 +24,7 @@
             {% endfor %}
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 pb-2 g-4">
+<div class="row row-cols-1 row-cols-md-2 pb-2 g-4">
     {% for instance in instances %}
       <div class="col">
     <div class="card">
@@ -37,18 +37,19 @@
             <div>
                 {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
                     <span class="btn btn-sm btn-dark">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }} {{instance.modelAppareil.appareil_sonde.unite }}</span>
-                {% endif %}
+                    <div>{{instance.modelAppareil.appareil_sonde.info }}</div>
+                    {% endif %}
             </div>
 
 
         </div>
         <div class="card-body ">
-            <div>
+            <div style="margin-bottom: 1.5rem;">
                 <div class="d-flex justify-content-start">
-                    <span data-target="md-table-{{instance.modelAppareil.id}}" class="btn btn-sm btn-secondary md-btn-display">+</span>
+                    <span data-target="md-table-{{instance.modelAppareil.id}}" class="btn btn-sm btn-secondary md-btn-display" style="height:max-content">+</span>
                     <form action="" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                         <select name="mdm" id="" class="btn btn-sm btn-primary" data-appareil="{{instance.modelAppareil.id}}">
+                         <select name="mdm" id="" class="btn btn-sm btn-primary"  data-appareil="{{instance.modelAppareil.id}}">
                         {% for data in instance.instanceAppareil.choices_mdm %}
                         <option value="{{data[0]}}" {% if data[0]==instance.modelAppareil.mode_de_marche.mode_de_marche %} selected="" {% endif %}>{{data[1]}}</option>
                         {% endfor %}
@@ -57,8 +58,26 @@
                    
                     {% if instance.modelAppareil.mode_de_marche.mode_de_marche=="prog" %}
                     
-                        <span data-appareil="{{instance.modelAppareil.id}}" data-span="md-calendar-{{instance.modelAppareil.id}}" class="btn btn-sm btn-light">🗓 ({{instance.modelAppareil.programmations|length}})</span>
+                        <span data-appareil="{{instance.modelAppareil.id}}" data-span="md-calendar-{{instance.modelAppareil.id}}" style="height:max-content" class="btn btn-sm btn-light">🗓 ({{instance.modelAppareil.programmations|length}})</span>
                 
+                    {% endif %}
+                    {% if instance.modelAppareil.sonde %}
+                    <div class="d-flex justify-content-around mx-1" style="width:245px">
+                        <div style="height: 100%;text-align:left" class="w-50">
+                            <div>Eco: <input type="text" name="" id="eco-{{instance.modelAppareil.id}}" style="width:33px; border:none" >°C</div>
+                            <input data-target="eco-{{instance.modelAppareil.id}}" class="md-cursor-{{instance.modelAppareil.id}} md-min " style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
+                            
+                            
+                        </div>
+                        <div style="height: 100%;text-align:left" class="w-50">
+                            <div>Confort: <input type="text" name="" id="confort-{{instance.modelAppareil.id}}" style="width:33px; border:none" >°C</div>
+                            <input data-target="confort-{{instance.modelAppareil.id}}" class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical" value="17" min="15" max="25" step=0.5 type="range" name=""  >
+                            
+                           
+                        </div>
+                        <div style="font-size:1.5rem; cursor: pointer;" data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="md-setting">&#x2699;</div>
+                       
+                    </div>
                     {% endif %}
                 </div>
                 
@@ -91,6 +110,10 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div id="chart" class="card" style="min-height: 25vh;">
+                Chart
             </div>
 
         </div>

@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded',function(){
     })
 
     $('span[data-span]').on('click',function(e){
-        let ul = '<ul>'
+        let ul = '<ul><li class="btn btn-sm btn-success">+ Programmation</li>'
         let xhr = new XMLHttpRequest();
         xhr.open('get',url+'/api/programmation/'+e.target.dataset['appareil'])
         xhr.responseType ='json'
@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded',function(){
             console.log(this.response)
            for(let toto in this.response){
             //Vendredi: 00:00=>17:55 Del Edit
-            ul = ul + `<li>${days[(this.response[toto].day)-1]}: ${this.response[toto].heure_debut}:${this.response[toto].min_debut}=>${this.response[toto].heure_fin}:${this.response[toto].min_fin}</li>`
+            ul = ul + `<li class="d-flex justify-content-between mx-2"><div>${days[(this.response[toto].day)-1]}: ${this.response[toto].heure_debut}:${this.response[toto].min_debut}=>${this.response[toto].heure_fin}:${this.response[toto].min_fin}</div><div><span class="btn btn-sm btn-danger">X</span></div> </li>`
         }
         //console.log(e.target.dataset['span'])
         ul = ul + '</ul>'
@@ -35,17 +35,21 @@ window.addEventListener('DOMContentLoaded',function(){
 
     // gestion changement du mode de marche
     $('form').on('change',function(e){
-       
+        e.target.className = 'btn btn-sm btn-danger'
         let form = new FormData(e.currentTarget)
         let xhr = new XMLHttpRequest()
         xhr.open('post',url+'/api/mdm/'+e.target.dataset.appareil)
         //xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = function(){
-            console.log(xhr.status, xhr.readyState)
             if(xhr.status===200 && xhr.readyState===4){
-                e.target.className = 'btn btn-sm btn-success'
-            }else{
-                e.target.className = 'btn btn-sm btn-danger'
+                e.target.className = 'btn btn-sm btn-primary'
+                $('#md-calendar-'+e.target.dataset.appareil).text('Changement pris en compte').show()
+                .css('padding','1rem').css('width','max-content').css('border','solid 1px #dbcece').css('margin-left','5px')
+                .addClass('bg-light text-dark')
+                setTimeout(()=>{
+                    $('#md-calendar-'+e.target.dataset.appareil).text('').hide();
+                    location.reload()
+                },2000)
             }
         }
         xhr.onprogress = function(){
@@ -53,5 +57,28 @@ window.addEventListener('DOMContentLoaded',function(){
         }
       
         xhr.send(form);
+    })
+
+    // gestion valeur curseur
+    $('.md-min').on('change', function(e){
+        $('#'+e.currentTarget.dataset['target']).prop('value',e.target.value)
+    })
+
+    $('.md-max').on('change', function(e){
+        $('#'+e.currentTarget.dataset['target']).prop('value',e.target.value)
+    })
+
+    // affichage cohérent entre curseur et input température
+    $('.md-min').each(function(key,value){
+        $('#'+value.dataset['target']).prop('value',value.value)
+      
+    })
+    $('.md-max').each(function(key,value){
+        $('#'+value.dataset['target']).prop('value',value.value)
+    })
+       
+    $('.md-setting').on('click', function(e){
+        $('.'+e.target.dataset['targetCursor']).toggle()
+        
     })
 })

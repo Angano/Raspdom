@@ -1,0 +1,21 @@
+.card-body{
+    min-height: 270px;
+}
+
+.chart{
+    position: absolute;
+    z-index: 5;
+    width: 99%;
+    top:8rem;
+}
+
+@media screen and (max-width:767px){
+    .card-body{
+        min-height: 334px;
+        top:12rem;
+    }
+    .chart{
+        top: 12rem;
+        width: 97%;
+    }
+}

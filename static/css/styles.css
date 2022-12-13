@@ -91,7 +91,7 @@ h1, .h1 {
 
 h2, .h2 {
   /*font-size: calc(1.325rem + 0.9vw);*/
-  font-size:1rem;
+  font-size:1.5rem;
 }
 @media (min-width: 1200px) {
   h2, .h2 {
@@ -10835,9 +10835,14 @@ textarea.form-control-lg {
   }
 }
 
-.container-fluid{
-    background-image:url('../assets/domo.jpg');
-    background-size:cover;
-    background-repeat:no-repeat;
+#img-bck{
+    position:absolute;
+    z-index:-10;
+    opacity:0.65;
+    height:100vh;
+    width:100%;
 
+}
+body{
+    background-color: #000000bf;
 }

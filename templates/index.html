@@ -4,126 +4,132 @@
 {% endblock %}
 
 {% block content %}
-<div class="row row-cols-1 row-cols-md-4 g-4 d-none">
-            {% for appareil in appareils %}
-
-  <div class="col">
-    <div class="card">
-     <div class="card-header">{{appareil.nom}} - {{appareil.label}}</div>
-      <div class="card-body">
-                <p class="card-text">Description:{{appareil.description}}</p>
-                <p class="card-text">Mode de Marche: <b>{{appareil.mode_de_marche.mode_de_marche}}</b></p>
-
-                <p class="card-text">{% if appareil.appareil_sonde.sonde_valeur_id %}
-                    T°: {{appareil.appareil_sonde.sonde_valeur_id.valeur}} {{appareil.appareil_sonde.unite}}
-                    {% endif %}
-                </p>
-      </div>
-        <div class="card-footer">
-            <p class="text-muted"><a target="_blanck" href="{{url_for('test', appareil_id=appareil.id)}}">Détail</a></p>
-        </div>
-    </div>
-  </div>
-            {% endfor %}
-</div>
-
-<div class="row row-cols-1 row-cols-md-2 pb-2 g-4">
+<div class="row row-cols-1 row-cols-md-2 rows-cols-lg-3 pb-2 g-4 mx-auto">
     {% for instance in instances %}
-      <div class="col">
-    <div class="card">
-
-        <div class="card-header d-flex justify-content-between">
-            <div>
-                <h2>{{instance.modelAppareil.nom}}</h2>
-                <small>{{instance.instanceAppareil.label.__doc__}}</small>
-            </div>
-            <div>
-                {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
-                    <span class="btn btn-sm btn-dark">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }} {{instance.modelAppareil.appareil_sonde.unite }}</span>
-                    <div>{{instance.modelAppareil.appareil_sonde.info }}</div>
-                    {% endif %}
-            </div>
-
-
-        </div>
-        <div class="card-body " >
-            <div class="row pb-2">
-                <div class="btn btn-sm btn-secondary md-btn-display col-2 col-md-1" data-target="md-table-{{instance.modelAppareil.id}}" style="height:max-content">+</div>
-                <!-- programmation-->
-                <form class="col-10 col-md-3 action="" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                    <select name="mdm" id="" class="btn btn-sm btn-primary w-100"  data-appareil="{{instance.modelAppareil.id}}">
-                        {% for data in instance.instanceAppareil.choices_mdm %}
-                        <option value="{{data[0]}}" {% if data[0]==instance.modelAppareil.mode_de_marche.mode_de_marche %} selected="" {% endif %}>{{data[1]}}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-            
-                {% if instance.modelAppareil.mode_de_marche.mode_de_marche=="prog" %}
-            
-                <div class="btn btn-sm btn-light col-12 col-md-2 "data-appareil="{{instance.modelAppareil.id}}" data-span="md-calendar-{{instance.modelAppareil.id}}" style="height:max-content" >🗓 ({{instance.modelAppareil.programmations|length}})</div>
-        
-                {% endif %}
-
-                <!-- affichage température plus curseur-->
-                {% if instance.modelAppareil.sonde %}
-                <div class="d-flex justify-content-around bg-light flex-row col-12 col-md-6"style="z-index:8" >
-                    <div style="text-align:left;height: 70%" class="w-50">
-                        <div class="bg-light" style="height:40%">Eco: <input class="bg-light" type="text" name="" id="eco-{{instance.modelAppareil.id}}" style="width:33px; border:none" >°C</div>
-                        <input data-target="eco-{{instance.modelAppareil.id}}" class=" bg-light md-cursor-{{instance.modelAppareil.id}} md-min " style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
-                    </div>
-                    <div style="height: 100%;text-align:left; height:70%" class="w-50">
-                        <div class="bg-light" style="height:40%">Confort: <input class="bg-light" type="text" name="" id="confort-{{instance.modelAppareil.id}}" style="width:33px; border:none" >°C</div>
-                        <input data-target="confort-{{instance.modelAppareil.id}}" class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical" value="17" min="15" max="25" step=0.5 type="range" name=""  >
-                    </div>
-                    <div style=" cursor: pointer;"  class="md-setting">
-                        <img data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" src="{{ url_for('static', filename='assets/setting.png') }}" alt="" width="25" height="25">
-                    </div>
+      <div class="col mx-auto" style="max-width:550px">
+        <div class="card ">
+            <div class="card-header d-flex justify-content-between" style="height:65px">
+                <div class="">
+                    <h2 class="m-0">{{instance.modelAppareil.nom}}</h2>
+                    <span>{{instance.instanceAppareil.label.__doc__}}</span>
                 </div>
-                {% endif %}
-            </div>
-            <!-- End -->
-            <div>
-                <span  id="md-calendar-{{instance.modelAppareil.id}}" style="display:none; width:100%;position:absolute; left:0px; top:115px;z-index:10;background-color:white"></span>
-            </div>
-            <table id="md-table-{{instance.modelAppareil.id}}" class="table" style="display:none">
-                <thead>
-                    <tr><th>Instance</th><th>Model</th></tr>
-                </thead>
-                <tbody>
+                <div class="d-flex">
+                    {% if instance.modelAppareil.categorieappareil=='Eclairage' %}
+                    <span style="width:47px">
+                        <img src="{{url_for('static',filename='assets/ampoule.png')}}"  height="100%">
+                    </span>
+                    {% else %}
+                     <span style="width:47px">
+                        <img src="{{url_for('static',filename='assets/radiator.png')}}"  height="100%">
+                    </span>
+                    {% endif %}
 
-                    <tr>
-                        <td><span data-appareil="{{instance.modelAppareil.id}}" class="btn btn-sm btn-primary">Programmations</span></td><td>{{instance.modelAppareil.programmations}}</td>
-                    </tr>
-                        {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id is defined %}
-                    <tr>
-                        <td>temps min-max</td><td>Min:{{instance.modelAppareil.appareil_sonde.min}} - Max:{{instance.modelAppareil.appareil_sonde.max}} - {{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }}</td>
-                    </tr>
+                    {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
+                    <div style="margin-left:1rem">
+                         <span class="btn btn-sm btn-dark">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }} {{instance.modelAppareil.appareil_sonde.unite }}</span>
+                    <div><small>{{instance.modelAppareil.appareil_sonde.info }}</small></div>
+                    </div>
+
                     {% endif %}
 
 
-                    <tr>
-                        <td>gpio</td><td>{% for gpio in instance.modelAppareil.gpios%}
-                        <p>{{gpio.nom}} - {{gpio.mode}} - {{gpio.info}} - {{gpio.valeur}}</p>
-                        {% endfor%}</td>
-                    </tr>
-                    <tr>
-                        <td>gpio order</td><td>{{instance.modelAppareil.order_gpio}}</td>
-                    </tr>
-                </tbody>
-            </table>
-           
-            <div class="row chart" >
-                <div id="chart" class="card col-12" style="min-height: 25vh;">
-                    Chart
+                </div>
+
+
+
+            </div>
+            <div class="card-body " style="padding-top:0.5rem">
+                <div class="col-12 d-flex bg-light text-dark justify-content-start pb-1" >
+                    <div class="btn btn-sm btn-secondary md-btn-display md-panel" data-target="md-table-{{instance.modelAppareil.id}}" style="height:max-content">+</div>
+                    <!-- programmation-->
+                    <form class="" action="" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <select name="mdm" id="" class="md-panel"  data-appareil="{{instance.modelAppareil.id}}">
+                            {% for data in instance.instanceAppareil.choices_mdm %}
+                            <option value="{{data[0]}}" {% if data[0]==instance.modelAppareil.mode_de_marche.mode_de_marche %} selected="" {% endif %}>{{data[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {% if instance.modelAppareil.mode_de_marche.mode_de_marche=="prog" %}
+                    <div data-appareil="{{instance.modelAppareil.id}}" data-span="md-calendar-{{instance.modelAppareil.id}}" class="border-bottom border-secondary border-2" style="cursor:pointer;height:max-content; margin-top:2px; padding:7px 7px" >🗓 ({{instance.modelAppareil.programmations|length}})</div>
+                    {% endif %}
+
+                    <!-- affichage température plus curseur-->
+                    {% if instance.modelAppareil.sonde %}
+                    <div class="bg-light d-flex flex-row  px-0" style="z-index:8;" >
+                        <div style="cursor: pointer;text-align:left" class="md-setting ms-1 md-panel  border-bottom border-primary border-2">
+                            <div data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" style="width:80px">Eco:
+                                <input data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" type="text" name="" id="eco-{{instance.modelAppareil.id}}" style="cursor: pointer;width:33px; border:none" >°C</div>
+                            <input data-target="eco-{{instance.modelAppareil.id}}" class=" md-cursor-{{instance.modelAppareil.id}} md-min " style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
+                        </div>
+                        <div style="cursor: pointer;text-align:left" class="md-setting md-panel border-bottom border-danger border-2">
+                            <div data-target-cursor="md-cursor-{{instance.modelAppareil.id}}"  class="" >Confort:
+                                <input data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" type="text" name="" id="confort-{{instance.modelAppareil.id}}" style="cursor: pointer;width:33px; border:none" >°C
+                            </div>
+                            <input data-target="confort-{{instance.modelAppareil.id}}" class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical" value="17" min="15" max="25" step=0.5 type="range" name=""  >
+                        </div>
+
+                    </div>
+                    {% endif %}
+                    <div class="ms-1 border-bottom border-2 border-secondary" style="padding-bottom: 5px;margin-top: 7px;">
+                        <img data-targethistogramme="{{instance.modelAppareil.id}}" src="{{url_for('static',filename='assets/histogramme.png')}}" width="25px">
+                    </div>
+
+                </div>
+                <!-- End -->
+                <div>
+                    <span  id="md-calendar-{{instance.modelAppareil.id}}" class="programmations"></span>
+                </div>
+                <table id="md-table-{{instance.modelAppareil.id}}" class="table" style="display:none">
+                    <thead>
+                        <tr><th>Instance</th><th>Model</th></tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td><span data-appareil="{{instance.modelAppareil.id}}" class="btn btn-sm btn-primary">Programmations</span></td><td>{{instance.modelAppareil.programmations}}</td>
+                        </tr>
+                            {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id is defined %}
+                        <tr>
+                            <td>temps min-max</td><td>Min:{{instance.modelAppareil.appareil_sonde.min}} - Max:{{instance.modelAppareil.appareil_sonde.max}} - {{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }}</td>
+                        </tr>
+                        {% endif %}
+
+
+                        <tr>
+                            <td>gpio</td><td>{% for gpio in instance.modelAppareil.gpios%}
+                            <p>{{gpio.nom}} - {{gpio.mode}} - {{gpio.info}} - {{gpio.valeur}}</p>
+                            {% endfor%}</td>
+                        </tr>
+                        <tr>
+                            <td>gpio order</td><td>{{instance.modelAppareil.order_gpio}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class=" chart " style="width:94%" >
+                    <div data-histogramme="{{instance.modelAppareil.id}}" class=" card " style="display:none">
+                        <img  src="{{ url_for('static', filename='assets/graph.png') }}" alt="" width="100%" height="100%">
+                    </div>
+                </div>
+                <div class="md-status" style="width:94%;position:absolute">
+                    <div class="card px-0"  >
+                        <div class="card-header d-flex ">Status
+                            <div class="d-flex justify-content-center w-100 ">
+                                {% for gpio in instance.modelAppareil.gpios %}
+                                    <div class="btn btn-sm btn-secondary mx-1 py-0" data-gpio="{{gpio.valeur}}">{{gpio.info}}</div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="card-footer text-end mt-1" >
+                <a href="" class="btn btn-sm btn-primary ">Détail</a>
+            </div>
         </div>
-        <div class="card-footer text-end mt-1" >
-            <a href="" class="btn btn-sm btn-primary ">Détail</a>
         </div>
-    </div>
-</div>
     {% endfor %}
 </div>
 {% endblock %}

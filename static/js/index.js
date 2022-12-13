@@ -75,4 +75,13 @@ window.addEventListener('DOMContentLoaded',function(){
         $('.'+e.target.dataset['targetCursor']).toggle()
         
     })
+
+    // affichage histogramme
+
+    $('[data-targethistogramme]').on('click',function(e){
+        console.log(e.target.dataset)
+        $('[data-histogramme='+e.target.dataset.targethistogramme+']').toggle()
+        console.log( $('[data-histogramme='+e.target.dataset.targethistogramme+']'))
+        })
+
 })

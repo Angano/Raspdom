@@ -23,9 +23,9 @@ background-color:transparent;
 /* affichage des programmations */
 .programmations{
     display:none;
-    width:52%;
+    width:80%;
     position:absolute;
-    left:110px;
+    left:10%;
     top:115px;
     z-index:10;
     background-color:white;

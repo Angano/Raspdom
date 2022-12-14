@@ -77,7 +77,7 @@
                             </div>
 
                             <input id="md-cursoreco-{{instance.modelAppareil.id}}" data-target="eco-{{instance.modelAppareil.id}}" class=" md-cursor-{{instance.modelAppareil.id}} md-min "
-                                   style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
+                                   style="display:none;height: 60px;width:100%" orient="vertical" value="{{instance.modelAppareil.appareil_sonde.min}}" min="15" max="25" step=0.5 type="range" name=""  >
 
                         </div>
 
@@ -96,7 +96,7 @@
 
                             <input id="md-cursorconfort-{{instance.modelAppareil.id}}" data-target="confort-{{instance.modelAppareil.id}}"
                                    class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical"
-                                   value="17" min="15" max="25" step=0.5 type="range" name=""  >
+                                   value="{{instance.modelAppareil.appareil_sonde.max}}" min="15" max="25" step=0.5 type="range" name=""  >
 
 
 
@@ -175,6 +175,13 @@
 {% endblock %}
 
 {% block script %}
+<script>
+    csrf = "{{csrf_token()}}"
 
-<script src="{{url_for('static', filename='js/index.js')}}"></script>
+</script>
+
+<script src="{{url_for('static', filename='js/index.js')}}">
+
+</script>
+
 {% endblock %}

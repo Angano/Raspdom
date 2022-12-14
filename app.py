@@ -11,9 +11,9 @@ from forms import UserForm, LoginForm, EditUserForm, AppareilForm, GpioForm, Pro
 from models import User, Appareil, Gpio, Programmation, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde
 from Appareils import Eclairage, ChauffageR
 
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CSRFProtect
 
-CsrfProtect(app)
+csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -586,10 +586,25 @@ def api_mdm(id):
         appareil.mode_de_marche.mode_de_marche = request.form['mdm']
         db.session.add(appareil)
         db.session.commit()
-
-
-    
     return render_template('test.html')
+
+@app.route('/api/temp-min/<int:id>', methods=['get','post'])
+def temp_mini(id):
+    if request.method == 'POST':
+        appareil = Appareil.query.get(id)
+        appareil.sonde.min = request.form['value']
+        db.session.add(appareil)
+        db.session.commit()
+    return 'yes'
+
+@app.route('/api/temp-max/<int:id>', methods=['get','post'])
+def temp_max(id):
+    if request.method == 'POST':
+        appareil = Appareil.query.get(id)
+        appareil.sonde.max = request.form['value']
+        db.session.add(appareil)
+        db.session.commit()
+    return 'yes'
 
 
 if __name__ == '__main__':

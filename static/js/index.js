@@ -1,6 +1,5 @@
-window.addEventListener('DOMContentLoaded',function(){
+
     var days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche']
-    
     var url = this.window.origin
 
     // gestion affichage tableau de données
@@ -10,19 +9,30 @@ window.addEventListener('DOMContentLoaded',function(){
 
     // gestion affichage des programmations
     $('div[data-span]').on('click',function(e){
+
+        var spinner = `<div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>`
+            $('#'+e.target.dataset['span']).html(spinner)
+        $('#'+e.target.dataset['span']).css('border','none').css('padding','5rem').css('text-align','center').toggle()
+
         let ul = '<ul><li class="btn btn-sm btn-success">+ Programmation</li>'
         let xhr = new XMLHttpRequest();
         xhr.open('get',url+'/api/programmation/'+e.target.dataset['appareil'])
         xhr.responseType ='json'
+
+
         xhr.onload = function(){
      
            for(let toto in this.response){
             
             ul = ul + `<li class="d-flex justify-content-between mx-2"><div>${days[(this.response[toto].day)-1]}: ${this.response[toto].heure_debut}:${this.response[toto].min_debut}=>${this.response[toto].heure_fin}:${this.response[toto].min_fin}</div><div><span class="btn btn-sm btn-danger">X</span></div> </li>`
         }
+
         //console.log(e.target.dataset['span'])
         ul = ul + '</ul>'
-        $('#'+e.target.dataset['span']).html(ul).toggle()   
+
+        $('#'+e.target.dataset['span']).css('border','inherit').css('padding','inherit').css('text-align','inherit').html(ul)
         }
         xhr.send()
     })
@@ -56,10 +66,31 @@ window.addEventListener('DOMContentLoaded',function(){
     // gestion valeur curseur
     $('.md-min').on('change', function(e){
         $('#'+e.currentTarget.dataset['target']).text(e.target.value)
+        var value = e.target.value
+        var appareil = e.target.id.split('-')[2]
+        var url = window.origin+'/api/temp-min/'+appareil
+        var datas = new FormData()
+        datas.append('value',value)
+        datas.append('csrf_token',csrf)
+
+        let xhr = new XMLHttpRequest()
+        xhr.open('post', url)
+        xhr.send(datas)
+
     })
 
     $('.md-max').on('change', function(e){
         $('#'+e.currentTarget.dataset['target']).text(e.target.value)
+        var value = e.target.value
+        var appareil = e.target.id.split('-')[2]
+        var url = window.origin+'/api/temp-max/'+appareil
+        var datas = new FormData()
+        datas.append('value',value)
+        datas.append('csrf_token',csrf)
+
+        let xhr = new XMLHttpRequest()
+        xhr.open('post', url)
+        xhr.send(datas)
     })
 
     // affichage cohérent entre curseur et input température
@@ -89,4 +120,3 @@ window.addEventListener('DOMContentLoaded',function(){
         $('.md-min').hide()
     })
 
-})

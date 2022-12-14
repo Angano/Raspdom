@@ -10,6 +10,7 @@
     margin-top:0.4rem;
     margin-right: 0.4rem;
     margin-left: 0.4rem;
+    height: min-content;
 }
 input{
 background-color:transparent;
@@ -33,6 +34,26 @@ background-color:transparent;
 [data-targethistogramme]{
     cursor:pointer;
 }
+input[type='range']{
+    cursor:pointer;
+}
+
+.md-min{
+ outline:none;
+}
+.md-min:focus{
+ box-shadow: 0 0 10px #719ECE;
+}
+
+.md-max{
+ outline:none;
+}
+
+.md-max:focus{
+ box-shadow: 0 0 10px #dc3545;
+}
+
+
 @media screen and (max-width:767px){
     .card-body{
         min-height: 334px;

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block style %}
     <link href="{{ url_for('static', filename='css/media_query.css') }}" rel="stylesheet" />
 {% endblock %}
@@ -6,7 +7,7 @@
 {% block content %}
 <div class="row row-cols-1 row-cols-md-2 rows-cols-lg-3 pb-2 g-4 mx-auto">
     {% for instance in instances %}
-      <div class="col mx-auto" style="max-width:600px">
+      <div class="col mx-auto" style="max-width:550px">
         <div class="card ">
             <div class="card-header d-flex justify-content-between" style="height:65px">
                 <div class="">
@@ -26,7 +27,10 @@
 
                     {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
                     <div style="margin-left:1rem">
-                         <span class="btn btn-sm btn-dark">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur }} {{instance.modelAppareil.appareil_sonde.unite }}</span>
+                         <span class="btn btn-sm btn-dark" style="font-size:0.75rem">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur|round(1, 'floor') }}
+                             {% if instance.modelAppareil.appareil_sonde.unite == 'deg' %}
+                             °C
+                             {% endif %} </span>
                     <div><small>{{instance.modelAppareil.appareil_sonde.info }}</small></div>
                     </div>
 
@@ -61,24 +65,53 @@
 
                     <!-- affichage température plus curseur-->
                     {% if instance.modelAppareil.sonde %}
-                    <div class="bg-light d-flex flex-row  px-0" style="z-index:8;" >
-                        <div style="cursor: pointer;text-align:left" class="md-setting ms-1 md-panel  border-bottom border-primary border-2">
-                            <div data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" style="width:80px">Eco:
-                                <input readonly  data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" type="text" name="" id="eco-{{instance.modelAppareil.id}}" style="cursor: pointer;width:33px; border:none" >°C
+                    <div class=" d-flex flex-row  px-0" style="z-index:8;" >
+
+                        <div style="cursor: pointer;text-align:left" class=" ms-1 md-panel border-bottom border-primary border-2 ">
+
+                            <div data-target-cursor="md-cursoreco-{{instance.modelAppareil.id}}" class="md-setting"
+                                 style="width:80px;margin-top: 3px;padding-bottom: 7px;">Eco:
+                                <span data-target-cursor="md-cursoreco-{{instance.modelAppareil.id}}" class="" type="text" name=""
+                                      id="eco-{{instance.modelAppareil.id}}"
+                                      style="cursor: pointer;width:33px; border:none" ></span>°C
                             </div>
-                                <input data-target="eco-{{instance.modelAppareil.id}}" class=" md-cursor-{{instance.modelAppareil.id}} md-min " style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
+
+                            <input id="md-cursoreco-{{instance.modelAppareil.id}}" data-target="eco-{{instance.modelAppareil.id}}" class=" md-cursor-{{instance.modelAppareil.id}} md-min "
+                                   style="display:none;height: 60px;width:100%" orient="vertical" value="15" min="15" max="25" step=0.5 type="range" name=""  >
+
                         </div>
-                        <div style="cursor: pointer;text-align:left" class="md-setting md-panel border-bottom border-danger border-2">
-                            <div data-target-cursor="md-cursor-{{instance.modelAppareil.id}}"  class="" >Confort:
-                                <input readonly  data-target-cursor="md-cursor-{{instance.modelAppareil.id}}" class="" type="text" name="" id="confort-{{instance.modelAppareil.id}}" style="cursor: pointer;width:33px; border:none" >°C
+
+
+
+
+                        <div style="cursor: pointer;text-align:left; width:105px;" class=" md-panel border-bottom border-danger border-2">
+
+
+                            <div data-target-cursor="md-cursorconfort-{{instance.modelAppareil.id}}"  class="md-setting"
+                            style="width:110px;margin-top: 3px;padding-bottom: 7px;">Confort:
+                                <span data-target-cursor="md-cursorconfort-{{instance.modelAppareil.id}}" class="" type="text" name=""
+                                      id="confort-{{instance.modelAppareil.id}}"
+                                      style="cursor: pointer;width:33px; border:none" ></span>°C
                             </div>
-                            <input data-target="confort-{{instance.modelAppareil.id}}" class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical" value="17" min="15" max="25" step=0.5 type="range" name=""  >
+
+                            <input id="md-cursorconfort-{{instance.modelAppareil.id}}" data-target="confort-{{instance.modelAppareil.id}}"
+                                   class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical"
+                                   value="17" min="15" max="25" step=0.5 type="range" name=""  >
+
+
+
+
                         </div>
+
+
+
+
+
 
                     </div>
                     {% endif %}
-                    <div class="ms-1 border-bottom border-2 border-secondary" style="padding-bottom: 5px;margin-top: 7px;">
-                        <img data-targethistogramme="{{instance.modelAppareil.id}}" src="{{url_for('static',filename='assets/histogramme.png')}}" width="25px">
+                    <div class="ms-1 " >
+                        <img style="padding-bottom: 5px;margin-top: 9px;" class="border-bottom border-2 border-secondary" data-targethistogramme="{{instance.modelAppareil.id}}" src="{{url_for('static',filename='assets/histogramme.png')}}" width="25px">
                     </div>
                     </div>
                 </div>
@@ -93,7 +126,8 @@
                     <tbody>
 
                         <tr>
-                            <td><span data-appareil="{{instance.modelAppareil.id}}" class="btn btn-sm btn-primary">Programmations</span></td><td>{{instance.modelAppareil.programmations}}</td>
+                            <td><span data-appareil="{{instance.modelAppareil.id}}" class="btn btn-sm btn-primary">Programmations</span></td>
+                            <td>{{instance.modelAppareil.programmations}}</td>
                         </tr>
                             {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id is defined %}
                         <tr>
@@ -113,7 +147,7 @@
                     </tbody>
                 </table>
 
-                <div class=" chart " style="width:94%" >
+                <div class=" chart " >
                     <div data-histogramme="{{instance.modelAppareil.id}}" class=" card " style="display:none">
                         <img  src="{{ url_for('static', filename='assets/graph.png') }}" alt="" width="100%" height="100%">
                     </div>
@@ -121,9 +155,9 @@
                 <div class="md-status mt-2" >
                     <div class="card px-0"  >
                         <div class="card-header d-flex ">Status
-                            <div class="d-flex justify-content-center w-100 ">
+                            <div class="d-flex justify-content-end w-100 ">
                                 {% for gpio in instance.modelAppareil.gpios %}
-                                    <div class="btn btn-sm btn-secondary mx-1 py-0" data-gpio="{{gpio.valeur}}">{{gpio.info}}</div>
+                                    <div style="font-size:0.8rem " class="btn btn-sm btn-secondary mx-1 py-0" data-gpio="{{gpio.valeur}}">{{gpio.info}}</div>
                                 {% endfor %}
                             </div>
 

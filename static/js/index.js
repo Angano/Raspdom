@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded',function(){
                 e.target.className = 'btn btn-sm btn-primary'
                 $('#md-calendar-'+e.target.dataset.appareil).text('Changement pris en compte').show()
                 .css('padding','1rem').css('width','max-content').css('border','solid 1px #dbcece').css('margin-left','5px').css('z-index',10)
-                .addClass('bg-light text-dark')
+                .addClass('bg-warning text-dark border border-1 border-dark ')
                 setTimeout(()=>{
                     $('#md-calendar-'+e.target.dataset.appareil).text('').hide();
                     location.reload()
@@ -55,25 +55,25 @@ window.addEventListener('DOMContentLoaded',function(){
 
     // gestion valeur curseur
     $('.md-min').on('change', function(e){
-        $('#'+e.currentTarget.dataset['target']).prop('value',e.target.value)
+        $('#'+e.currentTarget.dataset['target']).text(e.target.value)
     })
 
     $('.md-max').on('change', function(e){
-        $('#'+e.currentTarget.dataset['target']).prop('value',e.target.value)
+        $('#'+e.currentTarget.dataset['target']).text(e.target.value)
     })
 
     // affichage cohérent entre curseur et input température
     $('.md-min').each(function(key,value){
-        $('#'+value.dataset['target']).prop('value',value.value)
+        $('#'+value.dataset['target']).text(value.value)
       
     })
     $('.md-max').each(function(key,value){
-        $('#'+value.dataset['target']).prop('value',value.value)
+        $('#'+value.dataset['target']).text(value.value)
     })
        
     $('.md-setting').on('click', function(e){
-        $('.'+e.target.dataset['targetCursor']).toggle()
-        
+        $('#'+e.target.dataset['targetCursor']).toggle()
+        $('#'+e.target.dataset['targetCursor'])[0].focus()
     })
 
     // affichage histogramme
@@ -81,7 +81,12 @@ window.addEventListener('DOMContentLoaded',function(){
     $('[data-targethistogramme]').on('click',function(e){
         console.log(e.target.dataset)
         $('[data-histogramme='+e.target.dataset.targethistogramme+']').toggle()
-        console.log( $('[data-histogramme='+e.target.dataset.targethistogramme+']'))
+
         })
+
+    $('.card-header').on('click',function(){
+        $('.md-max').hide()
+        $('.md-min').hide()
+    })
 
 })

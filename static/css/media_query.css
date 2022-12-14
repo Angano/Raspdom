@@ -1,10 +1,10 @@
 .card-body{
-    min-height: 335px;
-    /*min-height:120px;*/
+    /*min-height: 335px;
+    min-height:120px;*/
 }
 .md-status{
-    top:345px;
-    /*top:135px;*/
+    /*top:345px;
+    top:135px;*/
 }
 .md-panel{
     margin-top:0.4rem;
@@ -15,9 +15,9 @@ input{
 background-color:transparent;
 }
 .chart{
-    position: absolute;
+   /* position: absolute;
     z-index: 5;
-    top:7.5rem;
+    top:7.5rem;*/
 }
 /* affichage des programmations */
 .programmations{

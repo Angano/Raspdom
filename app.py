@@ -528,10 +528,12 @@ def add_programmation_by_app(appareil_id):
 @app.route('/api/programmation/add/<int:appareil_id>', methods=['post','get'])
 def add_programmation_by_app_api(appareil_id):
     appareil = Appareil.query.get(appareil_id)
+    print(appareil)
     form = ProgrammationForm(obj=appareil)
     if form.validate_on_submit():
         programmation = Programmation()
         form.populate_obj(programmation)
+        programmation.appareil = appareil.id
         db.session.add(programmation)
         db.session.commit()
 
@@ -565,9 +567,16 @@ def edit_programmation_from_appareil(programmation_id):
 @app.route('/api/programmation/<int:id>', methods=['get'])
 def api_programmation(id):
     programmation = Programmation.query.order_by('day').filter_by(appareil=id).all()
-    datas= dict()
+    appareil = Appareil.query.get(id)
+
+    datas = dict()
+    datas['programmations'] = dict()
+    datas['appareil'] = appareil.nom
+    datas['id'] = id
+
     for data in programmation:
-        datas[data.id] = {
+        datas['programmations'][data.id] = {
+            'id':data.id,
             'heure_debut':data.start,
             'min_debut':data.start_min,
             'heure_fin':data.end,
@@ -605,6 +614,16 @@ def temp_max(id):
         db.session.add(appareil)
         db.session.commit()
     return 'yes'
+
+@app.route('/api/programmation/delete', methods=['post'])
+def api_delete_programmation():
+
+    if request.method == 'POST':
+
+        programmation = Programmation.query.get(request.form['appareil'])
+        db.session.delete(programmation)
+        db.session.commit()
+    return 'nice'
 
 
 if __name__ == '__main__':

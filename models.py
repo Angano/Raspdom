@@ -45,7 +45,7 @@ class Sonde(db.Model):
     nom = db.Column(db.String(200))
     min = db.Column(db.Float())
     max = db.Column(db.Float())
-    unite = db.Column(db.String(20))
+    unite = db.Column(db.String(20), default='')
     present = db.Column(db.Boolean(),default=False)
     appareil = db.relationship('Appareil', backref='appareil_sonde', lazy=True)
     en_service = db.Column(db.Boolean(), default=False)
@@ -90,6 +90,7 @@ class Gpio(db.Model):
     
     # get choice of gpio free with gpio select for instance
     def get_free_gpio(self):
+        print(self.valeur)
         try:
             gpio = self.valeur.split('_')[1]
         except:
@@ -97,6 +98,7 @@ class Gpio(db.Model):
         gpio_used = [(int(data.valeur.split('_')[1])) for data in Gpio.query.all()]
         try:
             gpio_used.remove(int(gpio))
+
         except:
             pass
 

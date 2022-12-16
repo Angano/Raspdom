@@ -26,7 +26,9 @@
                     {% endif %}
 
                     {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
-                    <div style="margin-left:1rem">
+                    <div class="d-flex flex-column">
+
+                    <div>
                          <span class="btn btn-sm btn-dark" style="font-size:0.75rem">{{instance.modelAppareil.appareil_sonde.sonde_valeur_id.valeur|round(1, 'floor') }}
                              {% if instance.modelAppareil.appareil_sonde.unite == 'deg' %}
                              °C
@@ -35,6 +37,7 @@
                     </div>
                     <div>
                         <small>{{instance.modelAppareil.appareil_sonde.info }}</small>
+                    </div>
                     </div>
                     {% endif %}
                 </div>
@@ -147,7 +150,7 @@
                 </div>
             </div>
             <div class="card-footer text-end mt-1" >
-                <a href="" class="btn btn-sm btn-primary ">Détail</a>
+                <a href="{{url_for('edit_appareil', appareil_id=instance.modelAppareil.id)}}" class="btn btn-sm btn-primary ">Détail</a>
             </div>
         </div>
       </div>

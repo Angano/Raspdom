@@ -17,13 +17,12 @@
             </thead>
             <tbody>{% for gpio in gpio_list %}
                 <tr>
-                    <td><a href="{{url_for('edit_gpio', gpio_id=gpio.id)}}">{{gpio.nom}}</a></td>
+                    <td>{{gpio.nom}}</td>
                     <td>{{gpio.mode}}</td>
                     <td>{{ gpio.valeur}}</td>
                     <td>{{ gpio.appareil.nom}}</td>
                     <td>{{ gpio.info}}</td>
                     <td class="mx-auto text-center">{% if gpio.mode=='input'%}<input class="form-control mx-auto " style="width: 5rem;" type="text" id="gpio_{{gpio.id}}">{% else %}<button class="btn btn-success btn-sm">Test</button>{% endif %}</td>
-                    <td><a href="{{url_for('delete_gpio', gpio_id=gpio.id)}}"><span style="color:red; font-weight:bold">X</span></a></td>
 
                 </tr>{% endfor %}
             </tbody>

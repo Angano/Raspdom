@@ -223,9 +223,8 @@ def edit_appareil(appareil_id):
     appareilform = AppareilForm(obj=appareil, data=request.form)
     gpio_free = Gpio()
     gpio_free = gpio_free.get_free_gpio()
-
-
-
+    for data in appareil.gpios:
+        print(data.get_free_gpio())
     if not appareilform.gpios:
         if not instance_appareil.sonde:
             for i in range(instance_appareil.entre):
@@ -244,30 +243,35 @@ def edit_appareil(appareil_id):
             gpioform = GpioForm()
             gpioform.mode = 'Output'
             gpioform.nom=''
+
             try:
                 gpioform.info = instance_appareil.infos_sortie[i]
             except:
                 gpioform.info = ''
             appareilform.gpios.append_entry(gpioform)
 
+
     if instance_appareil.sonde:
 
         #sonde = Sonde.query.filter_by(appareil_id=appareil.id).first()
-        sonde = None
+        sonde = appareil.sonde
         if sonde is None:
             sonde = Sonde()
-        sondeform = SondeForm(obj=sonde)
 
-        sondeform.unite = sonde.unite
-        sondeform.min = sonde.min
-        sondeform.max = sonde.max
-        sondeform.en_service = sonde.en_service
-        sondeform.type_sonde = sonde.type_sonde
-        #sondeform.capteur = sonde.capteur
-        appareilform.sondes.append_entry(sondeform)
+        if appareilform.sondes.__len__()<1:
+            sondeform = SondeForm(obj=sonde)
+
+            sondeform.unite = sonde.unite
+            sondeform.min = sonde.min
+            sondeform.max = sonde.max
+            sondeform.en_service = sonde.en_service
+            sondeform.type_sonde = sonde.type_sonde
+            sondeform.capteur = sonde.id
+            appareilform.sondes.append_entry(sondeform)
+
 
     #appareilform.categorie_appareil_id.choices = [(data.id, data.nom) for data in Categorieappareil.query.all()]
-    return render_template('appareil/appareil.html', appareilform=appareilform, gpios=gpios, appareil=appareil, isSonde=instance_appareil.sonde)
+    return render_template('appareil/appareil_edit.html', appareilform=appareilform, gpios=gpios, appareil=appareil, isSonde=instance_appareil.sonde)
 
 @app.route('/appareils')
 def appareils():
@@ -292,9 +296,6 @@ def delete_appareil(appareil_id):
     if mode_de_marches != None:
         for mode_de_marche in mode_de_marches:
             db.session.delete(mode_de_marche)
-
-
-
     db.session.delete(appareil)
     db.session.commit()
     reload()
@@ -380,7 +381,7 @@ def gpio():
     if gpioform.validate_on_submit():
         gpioform.populate_obj(gpio)
         db.session.add(gpio)
-        db.session.commit()
+        #db.session.commit()
         return redirect(url_for('gpios'))
     gpioform.valeur.choices = gpio.get_free_gpio()
     #gpioform.appareils.choices = [(data.id, data.nom) for data in Appareil.query.all()]
@@ -400,8 +401,8 @@ def edit_gpio(gpio_id):
        
     if gpioform.validate_on_submit():
         gpioform.populate_obj(gpio)
-        db.session.add(gpio)
-        db.session.commit()
+        #db.session.add(gpio)
+        #db.session.commit()
         return redirect(url_for('gpios'))
     gpioform.valeur.choices = gpio.get_free_gpio() 
     #gpioform.appareils.choices = [(data.id, data.nom) for data in Appareil.query.all()]
@@ -411,8 +412,8 @@ def edit_gpio(gpio_id):
 @app.route('/gpio/delete/<int:gpio_id>')
 def delete_gpio(gpio_id):
     gpio = Gpio.query.get(gpio_id)
-    db.session.delete(gpio)
-    db.session.commit()
+    #db.session.delete(gpio)
+    #db.session.commit()
     return redirect(url_for('gpios'))
 
 

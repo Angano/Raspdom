@@ -40,10 +40,10 @@ class ModeDeMarcheForm(FlaskForm):
 
 class GpioForm(FlaskForm):
     nom = StringField()
-    mode = StringField()
-    valeur = SelectField(choices=[], validate_choice=False)
+    mode = StringField(render_kw={'readonly': True})
+    valeur = SelectField(choices=[], validate_choice=False,render_kw={'data-select':'gpio'})
     #appareils = SelectField(validate_choice=False, choices=action.get_appareil(), default='')
-    info = StringField()
+    info = StringField(render_kw={'readonly': True})
 
     def __init__(self, *args, **kwargs):
         super(GpioForm, self).__init__(*args, **kwargs)

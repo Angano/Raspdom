@@ -33,6 +33,7 @@
                                     <div class="d-flex justify-content-around card-body">
                                         {% for data in appareilform.gpios %}
                                             <div class="">{{data}}</div>
+
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -85,4 +86,8 @@
 
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static',filename='js/appareil.js')}}"></script>
 {% endblock %}

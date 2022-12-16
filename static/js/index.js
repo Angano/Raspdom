@@ -60,8 +60,11 @@
 
             var xhr2 = new XMLHttpRequest()
             xhr2.open('post', url+'/api/programmation/delete')
+            xhr2.onload = function(){
+                $('.modal.body').html(reload(appareilobject))
+            }
             xhr2.send(form)
-            $('.modal.body').html(reload(appareilobject))
+
         })
 
 
@@ -153,6 +156,8 @@
     $('.card-header').on('click',function(){
         $('.md-max').hide()
         $('.md-min').hide()
+        $('div[data-histogramme]').hide()
+        $('table').hide()
     })
 
     function reload(appareil){
@@ -180,12 +185,36 @@
 
             //$('#'+e.target.dataset['span']).css('border','solid 1px #dbcece').css('padding','inherit').css('text-align','inherit').html(ul)
             $('.modal-body').html(ul)
+
+            ////////////////////////////////////////////////////////////////////////////////
+
+             // Suppression d'une programmation
+            $('#ul-programmations>li>div>form').on('submit', function(e){
+            e.preventDefault()
+
+            var form = new FormData(e.target)
+
+            form.append('csrf_token', csrf)
+
+            var xhr2 = new XMLHttpRequest()
+            xhr2.open('post', url+'/api/programmation/delete')
+            xhr2.onload = function(){
+                $('.modal.body').html(reload(appareilobject))
+            }
+            xhr2.send(form)
+
+        })
+
+            //////
+
             }
         xhr.send()
         $('#exampleModalLabel').html(`${appareil.appareil} - <small>Liste des programmations</small>`)
         //$('#md-modal-btn1').text('Ajouter une programmation')
         $('#md-modal-btn2').hide()
         $('#md-modal-btn1').show()
+
+
         return ul
 
     }

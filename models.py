@@ -101,7 +101,10 @@ class Gpio(db.Model):
             pass
 
         tab = []
-        
+        dati = list()
+        dati.append('')
+        dati.append('Select')
+        tab.append(dati)
         for i in range(0, 27):
             if i not in gpio_used:
                 data = list()

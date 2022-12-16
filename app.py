@@ -231,6 +231,7 @@ def edit_appareil(appareil_id):
             for i in range(instance_appareil.entre):
                 gpioform = GpioForm()
                 gpioform.mode = 'Input'
+
                 gpioform.nom = ''
 
                 try:

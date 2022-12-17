@@ -108,11 +108,11 @@ class Gpio(db.Model):
         dati.append('Select')
         tab.append(dati)
         for i in range(0, 27):
-            #if i not in gpio_used:
-            data = list()
-            data.append('Gpio_'+str(i))
-            data.append('Gpio_'+str(i))
-            tab.append(data)
+            if i not in gpio_used:
+                data = list()
+                data.append('Gpio_'+str(i))
+                data.append('Gpio_'+str(i))
+                tab.append(data)
 
         return tab
 

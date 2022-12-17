@@ -15,7 +15,12 @@
                 <p>Présente: {{ds1820b.present}}</p>
                 <p>En service: {{ds1820b.en_service}}</p>
             </div>
-            <div class="card-footer text-end">
+            <div class="card-footer text-end d-flex justify-content-between">
+                <form action="{{url_for('api_delete_sonde')}}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                    <input type="hidden" name="sonde" value="{{ds1820b.id}}">
+                    <input type="submit" value="Supprimer" class="btn btn-sm btn-danger">
+                </form>
                <a class="btn btn-sm btn-primary" href="{{url_for('edit_sonde',sonde_id=ds1820b.id)}}">Edition</a>
             </div>
         </div> </div>

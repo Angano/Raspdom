@@ -51,6 +51,7 @@ class GpioForm(FlaskForm):
         self.valeur.choices = gpio.get_free_gpio()
 
 
+
 class SondeForm(FlaskForm):
     choices = [('deg','T°c'),('cm','Cm')]
 

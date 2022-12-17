@@ -308,3 +308,46 @@
             xhr.send(formdata)
         })
     }
+
+            // Affichage status des gpios
+    function gpios_status(){
+        let xhr = new XMLHttpRequest()
+
+        var url = window.origin+'/api/gpios/status'
+
+        xhr.open('get', url )
+        xhr.setRequestHeader('Access-Control-Allow-Origin','*');
+        xhr.responseType = 'json'
+
+        xhr.onload = function(){
+
+            this.response.forEach(function(element){
+                console.log(element.mode)
+                if(element.mode == 'OUTPUT'){
+                    if(element.level == '0'){
+                        $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','green')
+
+                    }else{
+                        $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','red')
+
+                    }
+
+                }
+                else if(element.mode == 'INPUT\n'){
+                                        if(element.level == '1'){
+                        $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','red')
+
+                    }else{
+                        $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','blue')
+                    }
+                }
+
+            })
+
+        }
+        xhr.send()
+    }
+
+    setInterval(function(){
+        gpios_status();
+    },2000)

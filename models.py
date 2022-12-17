@@ -90,7 +90,7 @@ class Gpio(db.Model):
     
     # get choice of gpio free with gpio select for instance
     def get_free_gpio(self):
-        print(self.valeur)
+
         try:
             gpio = self.valeur.split('_')[1]
         except:
@@ -108,11 +108,11 @@ class Gpio(db.Model):
         dati.append('Select')
         tab.append(dati)
         for i in range(0, 27):
-            if i not in gpio_used:
-                data = list()
-                data.append('Gpio_'+str(i))
-                data.append('Gpio_'+str(i))
-                tab.append(data)
+            #if i not in gpio_used:
+            data = list()
+            data.append('Gpio_'+str(i))
+            data.append('Gpio_'+str(i))
+            tab.append(data)
 
         return tab
 

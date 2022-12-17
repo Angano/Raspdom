@@ -155,9 +155,13 @@ def appareil():
 @app.route('/appareil/<int:appareil_id>', methods=['POST','GET'])
 def edit_appareil(appareil_id):
     appareil = Appareil.query.get(appareil_id)
-    appareilform = AppareilForm(request.form)
+    appareilform = AppareilForm(obj=appareil, data=request.form)
     gpios = Gpio.query.order_by('mode','nom').all()
 
+    print(appareilform.choices)
+    for data in appareilform.gpios.data:
+        print(data['valeur'])
+        print(data)
     # appareil depuis Appareil.py
     instance_appareil = globals()[appareil.categorieappareil](appareil)
 
@@ -221,10 +225,10 @@ def edit_appareil(appareil_id):
         print(appareilform.errors)
 
     appareilform = AppareilForm(obj=appareil, data=request.form)
-    gpio_free = Gpio()
-    gpio_free = gpio_free.get_free_gpio()
-    for data in appareil.gpios:
-        print(data.get_free_gpio())
+
+    #gpio_free = Gpio()
+    #gpio_free = gpio_free.get_free_gpio()
+
     if not appareilform.gpios:
         if not instance_appareil.sonde:
             for i in range(instance_appareil.entre):
@@ -350,10 +354,34 @@ def test(appareil_id):
 
     db.session.commit()
     #reload()
-    
+
+    tab2 = []
+    gpios = Gpio.query.all()
+    for gpio in gpios:
+        var = gpio.valeur.split('_')[1]
+
+        try:
+            data = os.popen(f'raspi-gpio get {var}')
+            dati = data.read()
+
+            mode = dati.find('func=') + 5
+            popo = dati.find('level=')
+
+            toto = {
+                'gpio': dati[5:popo - 2],
+                'mode': dati[mode:mode + 6],
+                'level': dati[popo + 6],
+                'info': gpio.info
+            }
+            tab2.append(toto)
+        except:
+            print('no ds1820b')
+
     tab = []
     for gpio in appareil.gpios:
+
         var = gpio.valeur.split('_')[1]
+        print(var)
         try:
             data = os.popen(f'raspi-gpio get {var}')
             dati = data.read()
@@ -370,7 +398,9 @@ def test(appareil_id):
             tab.append(toto)
         except:
             print('no ds1820b')
-    return render_template('appareil/appareil_test.html', tab=tab, sondeform=sondeform, appareils=appareils, appareil=appareil, instance_appareil=instance_appareil, mode_de_marcheform=mode_de_marcheform, modedemarche=instance_appareil.choices_mdm, programmations=programmations)
+
+    tab2 = []
+    return render_template('appareil/appareil_test.html', tab=tab, tab2=tab2, sondeform=sondeform, appareils=appareils, appareil=appareil, instance_appareil=instance_appareil, mode_de_marcheform=mode_de_marcheform, modedemarche=instance_appareil.choices_mdm, programmations=programmations)
 
 
 # GPIO
@@ -626,6 +656,42 @@ def api_delete_programmation():
         db.session.delete(programmation)
         db.session.commit()
     return 'nice'
+
+@app.route('/api/delete/sonde', methods=['post'])
+def api_delete_sonde():
+    #sonde = Sonde.query.get(request)
+    sonde = Sonde.query.get(request.form['sonde'])
+    db.session.delete(sonde)
+    db.session.commit()
+
+    return redirect('/sondes')
+
+
+@app.route('/api/gpios/status', methods=['get'])
+def api_gpios_status():
+    tab2 = []
+    gpios = Gpio.query.all()
+    for gpio in gpios:
+        var = gpio.valeur.split('_')[1]
+
+        try:
+            data = os.popen(f'raspi-gpio get {var}')
+            dati = data.read()
+
+            mode = dati.find('func=') + 5
+            popo = dati.find('level=')
+
+            toto = {
+                'gpio': dati[5:popo - 2],
+                'mode': dati[mode:mode + 6],
+                'level': dati[popo + 6],
+                'info': gpio.info
+            }
+            tab2.append(toto)
+        except:
+            print('no ds1820b')
+
+    return jsonify(tab2)
 
 
 if __name__ == '__main__':

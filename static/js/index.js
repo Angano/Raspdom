@@ -90,7 +90,7 @@
                 .addClass('bg-warning text-dark border border-1 border-dark ')
                 setTimeout(()=>{
                     $('#md-calendar-'+e.target.dataset.appareil).text('').hide();
-                    location.reload()
+
                 },2000)
             }
         }

@@ -12,6 +12,9 @@ except:
     print('bug import gpio')
 
 class Common():
+    current = ''
+    mdmApp = ''
+    in_programmation = ''
     def __init__(self, appareil=None):
         self.appareil = appareil
 
@@ -34,6 +37,7 @@ class Common():
         if mode_de_marche == 'arret':
             try:
                 self.off()
+
             except:
                 print('erreur mdm arrêt', self.label.__doc__)
         elif mode_de_marche == 'off':
@@ -70,6 +74,7 @@ class Common():
                 self.off()
         elif mode_de_marche == 'manu':
             print('manu')
+            print(self.current)
         elif mode_de_marche == 'hs':
             print('hs')
         elif mode_de_marche == 'es':
@@ -78,7 +83,7 @@ class Common():
             self.test(ordre, sonde)
         else:
             print('pas trouvé de mode de marche ', mode_de_marche)
-
+        self.mdmApp = mode_de_marche
 
 class Eclairage(Common):
     entre = 1
@@ -88,6 +93,7 @@ class Eclairage(Common):
     choices_mdm = [('test', 'Test'), ('off', 'Off'), ('manu', 'Manuel'), ('prog', 'Programmation')]
     manuel = [('arret','Arrêt'), ('marche','Marche')]
     sonde = False
+    current = ''
 
     def label(self):
         "Eclairage"
@@ -97,11 +103,14 @@ class Eclairage(Common):
         print(self.A0,'=>off')
         Gpio = (self.A0.split('_'))[1]
         gpio.output(int(Gpio), gpio.HIGH)
+        return 'off'
 
     def on(self):
         print(self.A0,'=>on')
         Gpio = (self.A0.split('_'))[1]
         gpio.output(int(Gpio), gpio.LOW)
+
+
 
     def manu(self):
         if self.I0 is True:
@@ -117,12 +126,15 @@ class Eclairage(Common):
                 self.off()
         except ValueError:
             print(ValueError)
-
+    def currentStatus(self):
+        print(self.current)
     def programmation(self,programmation):
         if programmation:
             self.on()
+            self.in_programmation = 'True'
         else:
             self.off()
+            self.in_programmation = 'False'
 
 
 class ChauffageR(Common):
@@ -136,8 +148,10 @@ class ChauffageR(Common):
     manuel = [('arret', 'Arrêt'), ('eco', 'Eco'), ('confort', 'Confort')]
     choices_mdm = [('off', 'Off'),('test','Test'), ('eco', 'Eco'),('confort','Confort'), ('prog', 'Programmation')]
 
+
+
     def label(self):
-        "Chauffage Régulé"
+        "Chauffage"
         pass
 
    # mise à un d'un gpio
@@ -155,8 +169,8 @@ class ChauffageR(Common):
             Gpio = (Gpio.split('_'))[1]
             gpio.output(int(Gpio), gpio.HIGH)
         except:
-            print('gpio.out({}, gpio.HIGH)'.format(Gpio), 'error')
-
+             #print('gpio.out({}, gpio.HIGH)'.format(Gpio), 'error')
+            pass
     # sonde:Détermine si la valeur actuelle dépasse la consigne mini
     def sonde_min_on(self):
         # si valeur > consigne mini
@@ -178,16 +192,23 @@ class ChauffageR(Common):
         print('arret')
         self.gpio_off(self.A0)
         self.gpio_off(self.A1)
+        self.current = 'current_off'
         
     def mode_eco(self):
         print('eco')
         self.gpio_on(self.A0)
         self.gpio_off(self.A1)
+        self.current = "current_eco "
+
 
     def mode_confort(self):
         print('confort')
         self.gpio_on(self.A0)
         self.gpio_on(self.A1)
+        self.current = "current_confort"
+
+
+
     ## fin
 
 
@@ -195,13 +216,14 @@ class ChauffageR(Common):
     def off(self):
         self.mode_off()
 
+
     def eco(self, sonde):
         if sonde.en_service:
             if not self.sonde_min_on():
-                print('true on chauffe')
+                #print('true on chauffe')
                 self.mode_confort()
             elif self.sonde_min_on():
-                print('true stop chauffe')
+                #print('true stop chauffe')
                 self.mode_off()
             else:
                 print('pas compris')
@@ -219,6 +241,7 @@ class ChauffageR(Common):
             elif self.sonde_max_on():
                 print('true stop chauffe')
                 self.mode_off()
+
             else:
                 print('pas compris')
                 self.mode_off()
@@ -226,11 +249,15 @@ class ChauffageR(Common):
             self.mode_confort()
 
 
+
     def programmation(self, programmation):
         if programmation:
             self.confort(self.appareil.appareil_sonde)
+            self.in_programmation = True
         else:
             self.eco(self.appareil.appareil_sonde)
+            #print('roto',self.current)
+            self.in_programmation = False
 
 
     def test(self, ordre, sonde):

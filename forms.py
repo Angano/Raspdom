@@ -91,6 +91,7 @@ class AppareilForm(FlaskForm):
     description = StringField()
     gpios = FieldList(FormField(GpioForm))
     sondes = FieldList(FormField(SondeForm))
+    sonde_actived = BooleanField()
 
 class Ds1820bForm(FlaskForm):
     #nom = StringField(render_kw={'readonly':'readonly'})

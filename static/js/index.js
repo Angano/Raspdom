@@ -77,25 +77,36 @@
 
     // gestion changement du mode de marche
     $('form').on('change',function(e){
-        e.target.className = 'btn btn-sm btn-danger'
+        var appareil = e.target.dataset['appareil']
+        //e.target.className = 'btn btn-sm btn-danger'
         let form = new FormData(e.currentTarget)
         let xhr = new XMLHttpRequest()
         xhr.open('post',url+'/api/mdm/'+e.target.dataset.appareil)
         //xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = function(){
             if(xhr.status===200 && xhr.readyState===4){
-                e.target.className = 'btn btn-sm btn-primary'
+                //e.target.className = 'btn btn-sm btn-primary'
                 $('#md-calendar-'+e.target.dataset.appareil).text('Changement pris en compte').show()
                 .css('padding','1rem').css('width','max-content').css('border','solid 1px #dbcece').css('margin-left','5px').css('z-index',10)
                 .addClass('bg-warning text-dark border border-1 border-dark ')
                 setTimeout(()=>{
                     $('#md-calendar-'+e.target.dataset.appareil).text('').hide();
+                    if(e.target.value == 'prog'){
+                        $(`[data-span=md-calendar-${appareil}]`).removeClass('d-none')
+                    }else{
+                        $(`[data-span=md-calendar-${appareil}]`).addClass('d-none')
+                    }
 
+                    if(e.target.value == 'off' || e.target.value == 'test'){
+                        $(`[data-md-card-appareil=${appareil}]`).addClass('d-none')
+                    }else{
+                        $(`[data-md-card-appareil=${appareil}]`).removeClass('d-none')
+                    }
                 },2000)
             }
         }
         xhr.onprogress = function(){
-            e.target.className='btn btn-sm btn-warning'
+            //e.target.className='btn btn-sm btn-warning'
         }
       
         xhr.send(form);
@@ -168,6 +179,7 @@
 
 
         xhr.onload = function(){
+            $(`[data-span=md-calendar-${appareil.id}]`).text('🗓('+Object.keys(this.response.programmations).length+')')
 
             for(let toto in this.response.programmations){
 
@@ -322,7 +334,19 @@
         xhr.onload = function(){
 
             this.response.forEach(function(element){
-                console.log(element.mode)
+
+                //gestion affichage mode de marche
+                var tab = element.appareils
+                for(index in tab){
+
+                    var el = element.appareils[index]
+                    $(`#md-mdmr${el.id_appareil}`).text(el.status)
+
+                }
+
+
+                $('#dateMachine').text(element.dateMachine)
+
                 if(element.mode == 'OUTPUT'){
                     if(element.level == '0'){
                         $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','green')

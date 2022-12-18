@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 import os
 
 from config import app, db
@@ -187,7 +187,7 @@ def edit_appareil(appareil_id):
         appareil.nom = appareilform.nom.data
         appareil.categorieappareil = appareilform.categorieappareil.data
         appareil.description = appareilform.description.data
-
+        appareil.sonde_actived = appareilform.sonde_actived.data
         #appareil.mode_de_marche = appareilform.mode_de_marche.data
         gpios_delete = Gpio.query.filter_by(appareil_id=appareil_id).all()
         gpios_order = list()
@@ -670,7 +670,23 @@ def api_delete_sonde():
 @app.route('/api/gpios/status', methods=['get'])
 def api_gpios_status():
     tab2 = []
+
+    appareils = Appareil.query.all()
+
+    myAppareils = []
+
+    for md in appareils:
+        toto = {'id_appareil':md.id,'status':md.sortie}
+        myAppareils.append(toto)
+
+    #print(myAppareils)
+    tab2.append({'appareils':myAppareils})
+    dateMachine = str(str(datetime.now()).split(' ')[1]).split('.')[0]
+    machine = {'dateMachine':dateMachine}
+
+    tab2.append(machine)
     gpios = Gpio.query.all()
+
     for gpio in gpios:
         var = gpio.valeur.split('_')[1]
 
@@ -690,7 +706,7 @@ def api_gpios_status():
             tab2.append(toto)
         except:
             print('no ds1820b')
-
+    print(tab2)
     return jsonify(tab2)
 
 

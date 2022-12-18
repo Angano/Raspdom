@@ -21,6 +21,7 @@ class Appareil(db.Model):
     sonde = db.relationship('Sonde', uselist=False, backref='appareil_sonde', lazy=True)
     manuel = db.relationship('Manuel', uselist=False, backref='appareil_ordre', lazy=True)
     label = db.Column(db.String(250))
+    sonde_actived = db.Column(db.Boolean,default=False, nullable=False)
 
     def get_appareil(self):
         return self.query.all()

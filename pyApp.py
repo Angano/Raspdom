@@ -6,6 +6,10 @@ import glob
 
 import time
 import sys, inspect
+
+# mode dev sur pc
+mod_dev = True
+
 try:
 	import RPi.GPIO as gpio
 	gpio.setmode(gpio.BCM)
@@ -182,13 +186,10 @@ def init(gpio):
 # Optention du mode de marche déclarer en bdd d'un appareil
 def get_mdm(appareil):
     mdm = appareil.mode_de_marche.mode_de_marche
-    
-
     if appareil.appareil_sonde:
         sonde = appareil.appareil_sonde
     else:
         sonde = False
-
     # Si présence de programmation en relation avec l'appareil
     # on récupère ses programmations
     if mdm=='prog':
@@ -200,13 +201,14 @@ def get_mdm(appareil):
         ordre = appareil.manuel
     else:
         ordre = False
-
-
     # on lance l'appareil
     try:
         globals()[appareil.nom].start(mdm, sonde, programmation, ordre)
     except :
         print('not way', appareil.nom, mdm, sonde, programmation, ordre)
+    #print(globals()[appareil.nom].current, appareil.id, appareil.nom)
+    return [globals()[appareil.nom],appareil]
+
 
 # liste des instances des appareils
 def get_appareils():
@@ -221,7 +223,12 @@ def get_appareils():
     status.status = False
     session.add(status)
     session.commit()
-    init(gpio)
+
+    if mod_dev:
+        init(gpio=None)
+    else:
+        init(gpio)
+
     for appareil in list_appareil:
         try:
             # création des instances correspondant à la liste des apppareils en bdd
@@ -262,17 +269,40 @@ def start(gpio):
             for appareil in appareils:
                 for key, value in appareil.items():
                     try:
-                        get_mdm(key)
+                        datas = (get_mdm(key))
+
+                        #print(datas[0], datas[1].nom, datas[1].id)
+                        ############################################
+                        infos = {
+                            'appareil_id':datas[1].id,
+                            'sonde':datas[1].sonde,
+                            'sonde_id':datas[1].sonde_id,
+                            'sonde_actived':datas[1].sonde_actived,
+                            'sonde_presente':datas[1].sonde.present,
+                            'sonde_valeur':datas[1].sonde.sonde_valeur_id.valeur,
+                            'sonde_valeur_min':datas[1].sonde.min,
+                            'sonde_valeur_max':datas[1].sonde.max,
+                            'status':datas[0].current,
+                            'mdm':datas[0].mdmApp,
+                            'mdm model':datas[1].mode_de_marche.mode_de_marche,
+                            'in_programmation':datas[0].in_programmation}
+
+                        datas[1].sortie = infos['status']
+                        #print(infos['appareil_id'])
+                        session.add(datas[1])
+                        ############################################
                     except :
                         print(ValueError.__doc__)
+            session.commit()
             updateValeurDs1820()
-            time.sleep(2)
+            time.sleep(5)
            
 
             print('####  ###')
     else:
         print('init not good')
 
-
-start(gpio)
-
+if mod_dev:
+    start(gpio=None)
+else:
+    start(gpio)

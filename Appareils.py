@@ -271,3 +271,55 @@ class ChauffageR(Common):
         else:
             print('else')
 
+class ChauffeEau(Common):
+    entre = 0
+    sortie = 1
+    #infos_entre = ['Bouton On/Off']
+    infos_sortie = ['Relais on/off']
+    choices_mdm = [('off', 'Off'), ('marche', 'Marche'), ('prog', 'Programmation')]
+    #manuel = [('arret','Arrêt'), ('marche','Marche')]
+    sonde = False
+    current = ''
+
+
+    def label(self):
+        "Chauffe eau"
+        pass
+
+    def off(self):
+        print(self.A0,'=>off')
+        Gpio = (self.A0.split('_'))[1]
+        gpio.output(int(Gpio), gpio.HIGH)
+        return 'off'
+
+    def on(self):
+        print(self.A0,'=>on')
+        Gpio = (self.A0.split('_'))[1]
+        gpio.output(int(Gpio), gpio.LOW)
+
+
+
+    def manu(self):
+        if self.I0 is True:
+            self.on()
+        else:
+            self.off()
+
+    def test(self, ordre, sonde):
+        try:
+            if ordre.ordre == 'marche':
+                self.on()
+            else:
+                self.off()
+        except ValueError:
+            print(ValueError)
+    def currentStatus(self):
+        print(self.current)
+    def programmation(self,programmation):
+        if programmation:
+            self.on()
+            self.in_programmation = 'True'
+        else:
+            self.off()
+            self.in_programmation = 'False'
+

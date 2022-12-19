@@ -9,7 +9,7 @@ from flask_login import LoginManager, login_required, login_user, \
 
 from forms import UserForm, LoginForm, EditUserForm, AppareilForm, GpioForm, ProgrammationForm, ModeDeMarcheForm, SondeForm, Ds1820bForm, ReglageSondeForm
 from models import User, Appareil, Gpio, Programmation, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde
-from Appareils import Eclairage, ChauffageR
+from Appareils import Eclairage, ChauffageR, ChauffeEau
 
 from flask_wtf.csrf import CSRFProtect
 
@@ -131,6 +131,7 @@ def appareil():
         mode_de_marche = ModeDeMarche()
         appareilform.populate_obj(appareil)
         mode_de_marcheform.populate_obj(mode_de_marche)
+        print(appareilform.categorieappareil.data)
 
         try :
             instance_appareil = globals()[appareilform.categorieappareil.data]

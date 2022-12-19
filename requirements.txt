@@ -19,7 +19,6 @@ lazy-object-proxy==1.6.0
 Mako==1.1.4
 MarkupSafe==2.0.0
 mccabe==0.6.1
-pkg_resources==0.0.0
 pycodestyle==2.7.0
 pycparser==2.20
 pyflakes==2.3.1

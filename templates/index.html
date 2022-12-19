@@ -7,7 +7,7 @@
 {% block content %}
 <div class="row row-cols-1 row-cols-md-2 rows-cols-lg-3 pb-2 g-4 mx-auto">
     {% for instance in instances %}
-      <div class="col mx-auto" style="max-width:550px">
+      <div class="col mx-auto" style="max-width:585px">
         <div class="card ">
             <div class="card-header d-flex justify-content-between" style="height:65px">
                 <div class="">
@@ -20,9 +20,17 @@
                     <span style="width:47px">
                         <img src="{{url_for('static',filename='assets/ampoule.png')}}"  height="100%">
                     </span>
-                    {% else %}
+                    {% elif instance.modelAppareil.categorieappareil=='ChauffageR' %}
                      <span style="width:47px; margin-right:0.75rem">
                         <img src="{{url_for('static',filename='assets/radiator.png')}}"  height="100%">
+                    </span>
+                    {% elif instance.modelAppareil.categorieappareil=='ChauffeEau' %}
+                    <span style="width:47px; margin-right:0.75rem">
+                        <img src="{{url_for('static',filename='assets/ce.png')}}"  height="100%">
+                    </span>
+                    {% else %}
+                    <span style="width:47px; margin-right:0.75rem">
+                      {{instance.modelAppareil.categorieappareil}}
                     </span>
                     {% endif %}
 
@@ -44,7 +52,7 @@
                 </div>
             </div>
             <div class="card-body ">
-                <div class="row d-flex bg-light text-dark justify-content-start pb-1 mx-auto" >
+                <div class="row d-flex bg-light text-dark justify-content-start py-2 mb-3 mx-auto" >
                     <div class="col-12 col-md-6 d-flex mx-0 px-0" style="width:max-content">
                     <div class="btn btn-sm btn-secondary md-btn-display md-panel" data-target="md-table-{{instance.modelAppareil.id}}" style="height:max-content">+</div>
                     <!-- programmation-->
@@ -59,7 +67,7 @@
                     <div data-bs-toggle="modal" data-bs-target="#exampleModal" data-appareil="{{instance.modelAppareil.id}}"
                          data-span="md-calendar-{{instance.modelAppareil.id}}"
                          class=" {% if instance.modelAppareil.mode_de_marche.mode_de_marche!='prog' %} d-none {%endif %} border-bottom border-secondary border-2"
-                         style="cursor:pointer;height:max-content; margin-top:2px; padding:7px 7px" >🗓 ({{instance.modelAppareil.programmations|length}})</div>
+                         style="cursor:pointer;height:max-content; margin-top:3px; padding:7px 7px; width:60px" >🗓 ({{instance.modelAppareil.programmations|length}})</div>
 
                     </div>
                     <div class="col-12 col-md-6 d-flex mx-0 px-0" style="width:max-content">
@@ -78,7 +86,8 @@
                         <div style="cursor: pointer;text-align:left" class=" ms-1 md-panel border-bottom border-primary border-2 ">
 
                             <div data-target-cursor="md-cursoreco-{{instance.modelAppareil.id}}" class="md-setting"
-                                 style="width:80px;margin-top: 3px;padding-bottom: 7px;">Eco:
+                                 style="width:60px;margin-top: 3px;padding-bottom: 7px;">
+                                <img height="20px" src="{{url_for('static',filename='assets/froid.jpg')}}"}} alt="">
                                 <span data-target-cursor="md-cursoreco-{{instance.modelAppareil.id}}" class="" type="text" name=""
                                       id="eco-{{instance.modelAppareil.id}}"
                                       style="cursor: pointer;width:33px; border:none" ></span>°C
@@ -88,9 +97,9 @@
                                    style="display:none;height: 60px;width:100%" orient="vertical" value="{{instance.modelAppareil.appareil_sonde.min}}" min="15" max="25" step=0.5 type="range" name=""  >
 
                         </div>
-                        <div style="cursor: pointer;text-align:left; width:105px;" class=" md-panel border-bottom border-danger border-2">
+                        <div style="cursor: pointer;text-align:left; width:60px;" class=" md-panel border-bottom border-danger border-2">
                             <div data-target-cursor="md-cursorconfort-{{instance.modelAppareil.id}}"  class="md-setting"
-                            style="width:110px;margin-top: 3px;padding-bottom: 7px;">Confort:
+                            style="margin-top: 3px;padding-bottom: 7px;"><img height="20px" src="{{url_for('static',filename='assets/chaud.jpg')}}"}} alt="">
                                 <span data-target-cursor="md-cursorconfort-{{instance.modelAppareil.id}}" class="" type="text" name=""
                                       id="confort-{{instance.modelAppareil.id}}"
                                       style="cursor: pointer;width:33px; border:none" ></span>°C
@@ -102,8 +111,13 @@
                         </div>
                     </div>
                     {% endif %}
-                    <div class="ms-1 " >
-                        <img style="padding-bottom: 5px;margin-top: 9px;" class="border-bottom border-2 border-secondary" data-targethistogramme="{{instance.modelAppareil.id}}" src="{{url_for('static',filename='assets/histogramme.png')}}" width="25px">
+
+                            <div style="width:40px; height:40px" class=" text-center mx-2 border-bottom border-2 border-secondary">
+                        <img style=" cursor:pointer" title="Marche Forcée"  src="{{url_for('static',filename='assets/mf.jpg')}}" height="31px">
+                    </div>
+
+                    <div class="mx-2 border-bottom border-2 border-secondary text-center" style="width:40px; height:40px">
+                        <img style="padding-bottom: 5px;margin-top: 9px;" data-targethistogramme="{{instance.modelAppareil.id}}" src="{{url_for('static',filename='assets/histogramme.png')}}" width="25px">
                     </div>
                     </div>
                 </div>
@@ -148,6 +162,7 @@
                     <div class="card px-0"  >
                         <div class="card-footer d-flex ">Status
                             <div class="d-flex justify-content-end w-100 ">
+
                                 {% for gpio in instance.modelAppareil.gpios %}
                                     <div style="font-size:0.8rem " class="btn btn-sm btn-secondary mx-1 py-0" data-gpio="{{gpio.valeur}}">{{gpio.info}}</div>
                                 {% endfor %}

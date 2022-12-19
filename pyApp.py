@@ -1,6 +1,6 @@
 #!./venv/bin/python
 from models import Gpio, Programmation, Appareil, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde, GpioBcm
-from Appareils import Eclairage, ChauffageR
+from Appareils import Eclairage, ChauffageR, ChauffeEau
 from config import session
 import glob
 

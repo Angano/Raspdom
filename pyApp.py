@@ -204,6 +204,8 @@ def get_mdm(appareil):
     # on lance l'appareil
     try:
         globals()[appareil.nom].start(mdm, sonde, programmation, ordre)
+        print('oki', appareil.nom, mdm, sonde, programmation, ordre)
+
     except :
         print('not way', appareil.nom, mdm, sonde, programmation, ordre)
     #print(globals()[appareil.nom].current, appareil.id, appareil.nom)
@@ -233,7 +235,6 @@ def get_appareils():
         try:
             # création des instances correspondant à la liste des apppareils en bdd
             globals()[appareil.nom] = globals()[appareil.categorieappareil](appareil)
-
             data = {appareil: globals()[appareil.nom]}
             appareils.append(data)
 
@@ -265,7 +266,7 @@ def start(gpio):
             if status:
                 appareils = get_appareils()
                 print('get_appareil()')
-            print(time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec)
+            #print(time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec)
             for appareil in appareils:
                 for key, value in appareil.items():
                     try:
@@ -276,22 +277,28 @@ def start(gpio):
                         infos = {
                             'appareil_id':datas[1].id,
                             'sonde':datas[1].sonde,
-                            'sonde_id':datas[1].sonde_id,
-                            'sonde_actived':datas[1].sonde_actived,
-                            'sonde_presente':datas[1].sonde.present,
-                            'sonde_valeur':datas[1].sonde.sonde_valeur_id.valeur,
-                            'sonde_valeur_min':datas[1].sonde.min,
-                            'sonde_valeur_max':datas[1].sonde.max,
                             'status':datas[0].current,
                             'mdm':datas[0].mdmApp,
                             'mdm model':datas[1].mode_de_marche.mode_de_marche,
-                            'in_programmation':datas[0].in_programmation}
+                            'in_programmation':datas[0].in_programmation
+                        }
+
+                        if datas[1].sonde_id is not None:
+
+                            infos['sonde_id'] = datas[1].sonde_id
+                            infos['sonde_actived'] = datas[1].sonde_actived
+                            infos['sonde_presente'] = datas[1].sonde.present
+                            infos['sonde_valeur'] = datas[1].sonde.sonde_valeur_id.valeur
+                            infos['sonde_valeur_min'] = datas[1].sonde.min
+                            infos['sonde_valeur_max'] = datas[1].sonde.max
+
 
                         datas[1].sortie = infos['status']
                         #print(infos['appareil_id'])
                         session.add(datas[1])
                         ############################################
-                    except :
+                    except Exception as e:
+                        print(e)
                         print(ValueError.__doc__)
             session.commit()
             updateValeurDs1820()

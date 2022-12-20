@@ -1,7 +1,7 @@
 from config import db
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import UserMixin
-import time
+import time, datetime
 
 
 class Appareil(db.Model):
@@ -15,13 +15,15 @@ class Appareil(db.Model):
     order_gpio = db.Column(db.String(200))
     nbre_gpio = db.Column(db.Integer)
     programmations = db.relationship('Programmation', backref='appareil_programmation', lazy=True)
-    mode_de_marche = db.relationship('ModeDeMarche', uselist=False,  backref='appareil_mode_de_marche', lazy=True)
+    mode_de_marche = db.relationship('ModeDeMarche',  uselist=False,  backref='appareil_mode_de_marche', lazy=True)
     auto = db.relationship('Auto', uselist=False, backref='appareil_auto', lazy=True)
     sonde_id = db.Column(db.Integer, db.ForeignKey('sonde.id'))
     sonde = db.relationship('Sonde', uselist=False, backref='appareil_sonde', lazy=True)
     manuel = db.relationship('Manuel', uselist=False, backref='appareil_ordre', lazy=True)
     label = db.Column(db.String(250))
     sonde_actived = db.Column(db.Boolean,default=False, nullable=False)
+    #mf = db.Column(db.Integer, db.ForeignKey('mf.id'), nullable=True)
+    mf = db.relationship('Mf',  cascade="delete",uselist=False, backref='app_mf', lazy=True)
 
     def get_appareil(self):
         return self.query.all()
@@ -162,3 +164,10 @@ class Programmation(db.Model):
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Boolean(), default=False)
+
+class Mf(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    debut = db.Column(db.DateTime())
+    fin = db.Column(db.DateTime())
+    appareil_mf = db.Column(db.Integer, db.ForeignKey('appareil.id'), nullable=True)
+    actived = db.Column(db.Boolean(),default=False)

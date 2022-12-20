@@ -15,6 +15,7 @@
                     <span>{{instance.instanceAppareil.label.__doc__}}</span>
                 </div>
                 <div class="d-flex">
+
                     <div id="md-mdmr{{instance.modelAppareil.id}}">{{instance.modelAppareil.sortie}}</div>
                     {% if instance.modelAppareil.categorieappareil=='Eclairage' %}
                     <span style="width:47px">
@@ -113,7 +114,7 @@
                     {% endif %}
 
                             <div style="width:40px; height:40px" class=" text-center mx-2 border-bottom border-2 border-secondary">
-                        <img style=" cursor:pointer" title="Marche Forcée"  src="{{url_for('static',filename='assets/mf.jpg')}}" height="31px">
+                        <img data-marcheforce="{{instance.modelAppareil.id}}"  data-bs-toggle="modal" data-bs-target="#exampleModal"  style=" cursor:pointer" title="Marche Forcée"  src="{{url_for('static',filename='assets/mf.jpg')}}" height="31px">
                     </div>
 
                     <div class="mx-2 border-bottom border-2 border-secondary text-center" style="width:40px; height:40px">
@@ -172,8 +173,12 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-end mt-1" >
-                <a href="{{url_for('edit_appareil', appareil_id=instance.modelAppareil.id)}}" class="btn btn-sm btn-primary " target="_blanck">Détail</a>
+            <div style="font-size:10px" class="card-footer text-end mt-1 d-flex justify-content-end" >
+                <div class="alert alert-primary"  data-mf="{{instance.modelAppareil.id}}" style="display:none">Mf</div>
+                <div class="w-25" >
+                    <a href="{{url_for('edit_appareil', appareil_id=instance.modelAppareil.id)}}" class="btn btn-sm btn-primary " target="_blanck">Détail</a>
+
+                </div>
             </div>
         </div>
       </div>
@@ -192,10 +197,10 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel" data-md-appareil=""></h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="md-modal-body">
         ...
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" id="md-modal-footer">
           <span id="md-modal-btn1" class="btn btn-sm btn-success"></span>
           <span id="md-modal-btn2" class="btn btn-sm btn-primary" style="display:none"></span>
       </div>

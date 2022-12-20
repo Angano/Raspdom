@@ -342,6 +342,15 @@
                     var el = element.appareils[index]
                     $(`#md-mdmr${el.id_appareil}`).text(el.status)
 
+                    // gestion affichage marche forcée
+                    if(el.actived === true){
+                        var textmf = `<p class="p-0 m-0">${el.debut} => ${el.fin}</p>`
+                        $(`div[data-mf="${el.id_appareil}"]`).html(textmf).show()
+                    }else{
+                        $(`div[data-mf="${el.id_appareil}"]`).html('').hide()
+                    }
+
+
                 }
 
 
@@ -372,6 +381,52 @@
         xhr.send()
     }
 
+
     setInterval(function(){
         gpios_status();
     },2000)
+
+    // gestion marche forcée
+    $('img[data-marcheforce]').on('click',function(){
+        $('#exampleModalLabel').text('')
+        $('#md-modal-body').text('')
+
+        $('#md-modal-btn1').text('')
+        $('#md-modal-btn2').text('')
+        let id = this.dataset['marcheforce']
+
+        // récupération des infos de l'appareil
+        let form = `<form action="/api/marcheforce/add" method="post" id="md-form-mf">
+                    <input type="hidden" name="csrf_token" value="${csrf}">
+                    <input type="hidden" name="appareil_mf" value="${id}">
+                     <select name="marcheforce">
+                        <option value="1">1</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                     </select>
+
+                     </form>`
+
+        let xhr = new XMLHttpRequest()
+        xhr.open('get', `${url}/api/appareil/${id}`)
+        xhr.responseType = 'json'
+        xhr.onload = function(){
+
+            $('#exampleModalLabel').text(this.response['appareil'] + ' - Marche Forcée')
+            $('#md-modal-body').html(form)
+            $('#md-modal-btn1').text('Valider')
+
+            $('#md-modal-btn1').on('click', function(){
+                let form3 = $('#md-form-mf')
+                console.log(form3)
+                let sendform = new FormData(form3[0])
+                let xhr2 = new XMLHttpRequest()
+                xhr2.open('post',`${url}/api/marcheforce`)
+                xhr2.send(sendform)
+            })
+            }
+
+
+
+        xhr.send()
+    })

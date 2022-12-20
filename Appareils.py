@@ -37,14 +37,17 @@ class Common():
         if mode_de_marche == 'arret':
             try:
                 self.off()
-
-            except:
+            except Exception as e:
+                print('L41_',e)
                 print('erreur mdm arrêt', self.label.__doc__)
+
         elif mode_de_marche == 'off':
             try:
                 self.off()
-            except:
+            except Exception as e:
+                print('L48_',e)
                 print('erreur mdm off', self.label.__doc__)
+
         elif mode_de_marche == 'on':
             if sonde:
                 try:
@@ -81,9 +84,32 @@ class Common():
             print('en service')
         elif mode_de_marche == 'test':
             self.test(ordre, sonde)
+        elif mode_de_marche == 'marche':
+            self.marche()
         else:
             print('pas trouvé de mode de marche ', mode_de_marche)
         self.mdmApp = mode_de_marche
+
+        # mise à un d'un gpio
+
+    def gpio_on(self, Gpio):
+        try:
+            Gpio = (Gpio.split('_'))[1]
+
+            gpio.output(int(Gpio), gpio.LOW)
+        except:
+            print('gpio.out({}, gpio.LOW)'.format(Gpio), 'error')
+
+        # mise à 0 d'un gpio
+
+    def gpio_off(self, Gpio):
+        try:
+            Gpio = (Gpio.split('_'))[1]
+            gpio.output(int(Gpio), gpio.HIGH)
+        except:
+            print('gpio.out({}, gpio.HIGH)'.format(Gpio), 'error')
+            pass
+
 
 class Eclairage(Common):
     entre = 1
@@ -93,24 +119,19 @@ class Eclairage(Common):
     choices_mdm = [('test', 'Test'), ('off', 'Off'), ('manu', 'Manuel'), ('prog', 'Programmation')]
     manuel = [('arret','Arrêt'), ('marche','Marche')]
     sonde = False
-    current = ''
+
 
     def label(self):
         "Eclairage"
         pass
 
     def off(self):
-        print(self.A0,'=>off')
-        Gpio = (self.A0.split('_'))[1]
-        gpio.output(int(Gpio), gpio.HIGH)
-        return 'off'
+        self.gpio_off(self.A0)
+        self.current = 'off'
 
     def on(self):
-        print(self.A0,'=>on')
-        Gpio = (self.A0.split('_'))[1]
-        gpio.output(int(Gpio), gpio.LOW)
-
-
+        self.gpio_on(self.A0)
+        self.current = 'on'
 
     def manu(self):
         if self.I0 is True:
@@ -126,8 +147,7 @@ class Eclairage(Common):
                 self.off()
         except ValueError:
             print(ValueError)
-    def currentStatus(self):
-        print(self.current)
+
     def programmation(self,programmation):
         if programmation:
             self.on()
@@ -153,7 +173,7 @@ class ChauffageR(Common):
     def label(self):
         "Chauffage"
         pass
-
+        """ mis cette section dans common
    # mise à un d'un gpio
     def gpio_on(self, Gpio):
         try:
@@ -171,6 +191,9 @@ class ChauffageR(Common):
         except:
              #print('gpio.out({}, gpio.HIGH)'.format(Gpio), 'error')
             pass
+        
+    """
+
     # sonde:Détermine si la valeur actuelle dépasse la consigne mini
     def sonde_min_on(self):
         # si valeur > consigne mini
@@ -279,7 +302,6 @@ class ChauffeEau(Common):
     choices_mdm = [('off', 'Off'), ('marche', 'Marche'), ('prog', 'Programmation')]
     #manuel = [('arret','Arrêt'), ('marche','Marche')]
     sonde = False
-    current = ''
 
 
     def label(self):
@@ -287,23 +309,20 @@ class ChauffeEau(Common):
         pass
 
     def off(self):
-        print(self.A0,'=>off')
-        Gpio = (self.A0.split('_'))[1]
-        gpio.output(int(Gpio), gpio.HIGH)
-        return 'off'
+        self.gpio_off(self.A0)
+        self.in_programmation = 'False'
+        self.current = 'off'
 
     def on(self):
-        print(self.A0,'=>on')
-        Gpio = (self.A0.split('_'))[1]
-        gpio.output(int(Gpio), gpio.LOW)
+        self.gpio_on(self.A0)
+        self.in_programmation = 'True'
+        self.current = 'on'
 
 
 
-    def manu(self):
-        if self.I0 is True:
-            self.on()
-        else:
-            self.off()
+    def marche(self):
+        print('ollllllooi')
+        self.on()
 
     def test(self, ordre, sonde):
         try:
@@ -313,13 +332,11 @@ class ChauffeEau(Common):
                 self.off()
         except ValueError:
             print(ValueError)
-    def currentStatus(self):
-        print(self.current)
+
     def programmation(self,programmation):
         if programmation:
             self.on()
-            self.in_programmation = 'True'
         else:
             self.off()
-            self.in_programmation = 'False'
+
 

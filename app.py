@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+
 import os
 
 from config import app, db
@@ -8,7 +9,7 @@ from flask_login import LoginManager, login_required, login_user, \
                         logout_user, current_user
 
 from forms import UserForm, LoginForm, EditUserForm, AppareilForm, GpioForm, ProgrammationForm, ModeDeMarcheForm, SondeForm, Ds1820bForm, ReglageSondeForm
-from models import User, Appareil, Gpio, Programmation, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde
+from models import User, Appareil, Gpio, Programmation, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde, Mf
 from Appareils import Eclairage, ChauffageR, ChauffeEau
 
 from flask_wtf.csrf import CSRFProtect
@@ -678,6 +679,10 @@ def api_gpios_status():
 
     for md in appareils:
         toto = {'id_appareil':md.id,'status':md.sortie}
+        if md.mf is not None:
+            toto['actived'] = md.mf.actived
+            toto['debut'] = md.mf.debut
+            toto['fin'] = md.mf.fin
         myAppareils.append(toto)
 
     #print(myAppareils)
@@ -709,6 +714,36 @@ def api_gpios_status():
             print('no ds1820b')
     print(tab2)
     return jsonify(tab2)
+
+@app.route('/api/appareil/<int:id>', methods=['get'])
+def api_appareil(id):
+    appareil = Appareil.query.get(id)
+    datas = {
+        'appareil':appareil.nom,
+        'id':id
+    }
+    return jsonify(datas)
+
+#############" Marche forcée
+@app.route('/api/marcheforce', methods=['post'])
+def marcheforce():
+    if request.method == 'POST':
+
+        datas = {
+            'name': request.form['appareil_mf'],
+            'marcheforce' : request.form['marcheforce']
+        }
+        appareil = Appareil.query.get(datas['name'])
+        mf = Mf.query.get(datas['name'])
+        if mf is None:
+            mf = Mf()
+            mf.appareil_mf = appareil.id
+        mf.debut = datetime.now()
+        mf.fin = datetime.now()+timedelta(minutes=int(datas['marcheforce']))
+        db.session.add(mf)
+        db.session.commit()
+        return jsonify(datas)
+    return "next"
 
 
 if __name__ == '__main__':

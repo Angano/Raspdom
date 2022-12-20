@@ -152,7 +152,7 @@
     })
        
     $('.md-setting').on('click', function(e){
-        $('#'+e.target.dataset['targetCursor']).toggle()
+        $('#'+e.target.dataset['targetCursor']).toggle('slow')
         $('#'+e.target.dataset['targetCursor'])[0].focus()
     })
 
@@ -160,15 +160,15 @@
 
     $('[data-targethistogramme]').on('click',function(e){
         console.log(e.target.dataset)
-        $('[data-histogramme='+e.target.dataset.targethistogramme+']').toggle()
+        $('[data-histogramme='+e.target.dataset.targethistogramme+']').toggle('slow')
 
         })
 
     $('.card-header').on('click',function(){
-        $('.md-max').hide()
-        $('.md-min').hide()
-        $('div[data-histogramme]').hide()
-        $('table').hide()
+        $('.md-max').hide('slow')
+        $('.md-min').hide('slow')
+        $('div[data-histogramme]').hide('slow')
+        $('table').hide('slow')
     })
 
     function reload(appareil){
@@ -241,7 +241,7 @@
         $('#md-modal-btn2').show().text('Retour à la liste')
         $('#md-modal-btn1').hide()
 
-        // Ajout titre dans Modall
+        // Ajout titre dans Modal
         var titre = `${appareil.appareil} - <small>Ajout d\'une programmation</small>`
         $('h1[data-md-appareil]').html(titre)
 
@@ -321,7 +321,7 @@
         })
     }
 
-            // Affichage status des gpios
+    // Affichage status des gpios
     function gpios_status(){
         let xhr = new XMLHttpRequest()
 
@@ -342,12 +342,41 @@
                     var el = element.appareils[index]
                     $(`#md-mdmr${el.id_appareil}`).text(el.status)
 
+                    // convertion des dates
+                    let mois = ['Janv','Fev','Mars','Avr','Mai','Juin','Jui','Août','Sept','Oct','Nov','Dec']
+                    let jours = ['Lundi','Mardi','Mer','Jeudi','Vend','Sam','Dim']
+
+                    let debut = new Date(el.debut)
+                    let fin = new Date(el.fin)
+
+                    let debutData = debut.getUTCHours()+':'+debut.getMinutes()+' '+jours[debut.getDay()]+' '+ debut.getDate()+' '+mois[debut.getMonth()]+' '+debut.getFullYear()
+                    let finData = fin.getUTCHours()+':'+fin.getMinutes()+' '+jours[fin.getDay()]+' '+ fin.getDate()+' '+mois[fin.getMonth()]+' '+fin.getFullYear()
+
+                    let now = new Date()
+
+
+                    let nowTime = now.getTime()+3600000
+                    let debTime = debut.getTime()
+                    let finTime = fin.getTime()
+
+                    if(nowTime<finTime && el.actived === true){
+                        $(`div[data-mfdisplay="${el.id_appareil}"]`).show('slow')
+
+                    }else{
+
+                    $(`div[data-mfdisplay="${el.id_appareil}"]`).hide('slow')
+
+
+                    }
+
+
+
                     // gestion affichage marche forcée
                     if(el.actived === true){
-                        var textmf = `<p class="p-0 m-0">${el.debut} => ${el.fin}</p>`
-                        $(`div[data-mf="${el.id_appareil}"]`).html(textmf).show()
+                        var textmf = `<p class="p-0 m-0">${debutData} => ${finData}<img class="mx-2" data-mf-desactived="${el.id_appareil}" src="static/assets/cancel-icon.webp" width="25px" style="cursor:pointer; display:inline-block"></p>`
+                        $(`div[data-mf="${el.id_appareil}"]`).html(textmf).show('slow')
                     }else{
-                        $(`div[data-mf="${el.id_appareil}"]`).html('').hide()
+                        $(`div[data-mf="${el.id_appareil}"]`).html('').hide('slow')
                     }
 
 
@@ -377,6 +406,16 @@
 
             })
 
+            // gestion désactivation marche forcée
+            $('img[data-mf-desactived]').on('click',function(){
+
+                let appareil_id = this.dataset['mfDesactived']
+
+                let xhr = new XMLHttpRequest()
+                xhr.open('get',`${window.origin}/api/mf/desactived/${appareil_id}`)
+                xhr.send()
+            })
+
         }
         xhr.send()
     }
@@ -390,9 +429,14 @@
     $('img[data-marcheforce]').on('click',function(){
         $('#exampleModalLabel').text('')
         $('#md-modal-body').text('')
+        $('#md-modal-body').html('')
 
         $('#md-modal-btn1').text('')
+        $('#md-modal-btn1').html('')
+
         $('#md-modal-btn2').text('')
+        $('#md-modal-btn2').html('')
+
         let id = this.dataset['marcheforce']
 
         // récupération des infos de l'appareil

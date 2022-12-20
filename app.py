@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
-import os
+import os, time
 
 from config import app, db
 from flask import render_template, redirect, url_for, request, flash, jsonify
@@ -712,7 +712,7 @@ def api_gpios_status():
             tab2.append(toto)
         except:
             print('no ds1820b')
-    print(tab2)
+
     return jsonify(tab2)
 
 @app.route('/api/appareil/<int:id>', methods=['get'])
@@ -740,11 +740,20 @@ def marcheforce():
             mf.appareil_mf = appareil.id
         mf.debut = datetime.now()
         mf.fin = datetime.now()+timedelta(minutes=int(datas['marcheforce']))
+        #mf.fin = time.time(mf.fin)
+        mf.actived = True
         db.session.add(mf)
         db.session.commit()
         return jsonify(datas)
     return "next"
 
+@app.route('/api/mf/desactived/<int:id>', methods=['post','get'])
+def mf_deactived(id):
+    appareil = Appareil.query.get(id)
+    appareil.mf.actived = False
+    db.session.add(appareil)
+    db.session.commit()
+    return 'ik'
 
 if __name__ == '__main__':
     app.debug = True

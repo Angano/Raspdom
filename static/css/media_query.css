@@ -42,7 +42,7 @@ input[type='range']{
  outline:none;
 }
 .md-min:focus{
- box-shadow: 0 0 10px #719ECE;
+ box-shadow: 0 0 14px #719ECE;
 }
 
 .md-max{
@@ -50,7 +50,7 @@ input[type='range']{
 }
 
 .md-max:focus{
- box-shadow: 0 0 10px #dc3545;
+ box-shadow: 0 0 14px #dc3545;
 }
 
 

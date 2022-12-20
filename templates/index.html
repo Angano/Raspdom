@@ -14,6 +14,8 @@
                     <h2 class="m-0">{{instance.modelAppareil.nom}}</h2>
                     <span>{{instance.instanceAppareil.label.__doc__}}</span>
                 </div>
+                <div data-mfdisplay="{{instance.modelAppareil.id}}" class="m-auto alert alert-primary " style="display:none; height:15px">
+                    <p style="line-height:0px" class="p-0 m-0 text-muted"><small>Marche forcée en cours</small></p></div>
                 <div class="d-flex">
 
                     <div id="md-mdmr{{instance.modelAppareil.id}}">{{instance.modelAppareil.sortie}}</div>

@@ -731,19 +731,28 @@ def marcheforce():
 
         datas = {
             'name': request.form['appareil_mf'],
-            'marcheforce' : request.form['marcheforce']
+            'marcheforce' : request.form['marcheforce'],
+            'debut' : request.form['debut']
         }
-        appareil = Appareil.query.get(datas['name'])
-        mf = Mf.query.get(datas['name'])
+
+
+        mf = Mf.query.filter_by(appareil_mf=datas['name']).first()
+        print(mf)
         if mf is None:
             mf = Mf()
-            mf.appareil_mf = appareil.id
-        mf.debut = datetime.now()
-        mf.fin = datetime.now()+timedelta(minutes=int(datas['marcheforce']))
-        #mf.fin = time.time(mf.fin)
+            mf.appareil_mf = datas['name']
+
+
+        mf.debut = datetime.strptime(datas['debut'],'%d-%m-%Y %H:%M:%S')
+        mf.fin = datetime.strptime(datas['marcheforce'],'%d-%m-%Y %H:%M:%S')
+        print(mf.fin)
+        print(mf.debut)
+        print('ooooooooo#################################################ooo')
+
         mf.actived = True
         db.session.add(mf)
         db.session.commit()
+
         return jsonify(datas)
     return "next"
 

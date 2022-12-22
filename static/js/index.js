@@ -11,30 +11,26 @@
     $('div[data-span]').on('click',function(e){
 
         var appareil = e.target.dataset['appareil']
-
-        /*var spinner = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>`
-        $('#'+e.target.dataset['span']).html(spinner)
-        $('#'+e.target.dataset['span']).css('border','none').css('padding','5rem').css('text-align','center').toggle()*/
-        $('#md-modal-btn1').text('Ajouter une programmation')
+        eraseModal()
+        $('#md-modal-footer').html(' <span id="md-modal-btn1" class="btn btn-sm btn-success">Ajouter une programmation</span>')
 
         let ul = '<ul id="ul-programmations">'
         let xhr = new XMLHttpRequest();
         xhr.open('get',`${url}/api/programmation/${appareil}`)
         xhr.responseType ='json'
 
-
         xhr.onload = function(){
 
             for(let toto in this.response.programmations){
 
-            ul = ul + `<li class="d-flex justify-content-between mx-2">
-            <div>${days[(this.response.programmations[toto].day)-1]}: ${this.response.programmations[toto].heure_debut}:${this.response.programmations[toto].min_debut}=>${this.response.programmations[toto].heure_fin}:${this.response.programmations[toto].min_fin}</div>
-                <div>
-                    <form method="post" action="">
-                        <input type="hidden" name="appareil" value="${this.response.programmations[toto].id}" >
-                        <input class="btn btn-sm btn-danger" type="submit" value="X">
-                        </form>
-                </div> </li>`
+                ul = ul + `<li class="d-flex justify-content-between mx-2">
+                <div>${days[(this.response.programmations[toto].day)-1]}: ${this.response.programmations[toto].heure_debut}:${this.response.programmations[toto].min_debut}=>${this.response.programmations[toto].heure_fin}:${this.response.programmations[toto].min_fin}</div>
+                    <div>
+                        <form method="post" action="">
+                            <input type="hidden" name="appareil" value="${this.response.programmations[toto].id}" >
+                            <input class="btn btn-sm btn-danger" type="submit" value="X">
+                            </form>
+                    </div> </li>`
             }
 
             ul = ul + '</ul>'
@@ -46,18 +42,15 @@
             $('#md-modal-btn1').on('click', function(){
 
                 addProgrammation(appareilobject)
-
-
+                //$('#md-modal-body').html('').text('')
 
             })
             // Suppression d'une programmation
             $('#ul-programmations>li>div>form').on('submit', function(e){
             e.preventDefault()
-
             var form = new FormData(e.target)
-
             form.append('csrf_token', csrf)
-
+            eraseModal()
             var xhr2 = new XMLHttpRequest()
             xhr2.open('post', url+'/api/programmation/delete')
             xhr2.onload = function(){
@@ -66,10 +59,6 @@
             xhr2.send(form)
 
         })
-
-
-
-
 
             }
         xhr.send()
@@ -202,6 +191,7 @@
 
              // Suppression d'une programmation
             $('#ul-programmations>li>div>form').on('submit', function(e){
+            $('#md-modal.footer').html('')
             e.preventDefault()
 
             var form = new FormData(e.target)
@@ -344,13 +334,13 @@
 
                     // convertion des dates
                     let mois = ['Janv','Fev','Mars','Avr','Mai','Juin','Jui','Août','Sept','Oct','Nov','Dec']
-                    let jours = ['Lundi','Mardi','Mer','Jeudi','Vend','Sam','Dim']
+                    let jours = ['Dim','Lundi','Mardi','Mer','Jeudi','Vend','Sam']
 
                     let debut = new Date(el.debut)
                     let fin = new Date(el.fin)
 
-                    let debutData = debut.getUTCHours()+':'+debut.getMinutes()+' '+jours[debut.getDay()]+' '+ debut.getDate()+' '+mois[debut.getMonth()]+' '+debut.getFullYear()
-                    let finData = fin.getUTCHours()+':'+fin.getMinutes()+' '+jours[fin.getDay()]+' '+ fin.getDate()+' '+mois[fin.getMonth()]+' '+fin.getFullYear()
+                    let debutData = jours[debut.getDay()]+'-'+ debut.getDate()+'-'+mois[debut.getMonth()]+'-'+debut.getFullYear() +' <b>'+('0'+debut.getUTCHours()).slice(-2)+':'+('0'+debut.getMinutes()).slice(-2)+':'+('0'+debut.getSeconds()).slice(-2)+'</b>'
+                    let finData = jours[fin.getDay()]+'-'+ fin.getDate()+'-'+mois[fin.getMonth()]+'-'+fin.getFullYear() +' <b>'+('0'+fin.getUTCHours()).slice(-2)+':'+('0'+fin.getMinutes()).slice(-2)+':'+('0'+fin.getSeconds()).slice(-2)+'</b>'
 
                     let now = new Date()
 
@@ -358,6 +348,22 @@
                     let nowTime = now.getTime()+3600000
                     let debTime = debut.getTime()
                     let finTime = fin.getTime()
+
+
+                    if(finTime>nowTime && el.actived == true){
+                        var maDate = new Date(finTime-nowTime-3600000)
+                        var maDateDebut = new Date(debTime-nowTime-3600000)
+                        var duree = new Date(finTime-debTime-3600000)
+
+                        var dataDate = ``
+                        if(debTime>nowTime){
+                            dataDate = dataDate +`<small style="line-height:0px">Début dans: ${maDateDebut.getMonth()}mois ${maDateDebut.getDate()}jours ${maDateDebut.getHours()}h ${maDateDebut.getMinutes()}mn ${maDateDebut.getSeconds()}sec</small><br>`
+                            }
+                        dataDate = dataDate +`<small style="line-height:0px">Fin dans:  ${maDate.getMonth()}mois ${maDate.getDate()}jours  ${maDate.getHours()}h ${maDate.getMinutes()}mn ${maDate.getSeconds()}sec</small><br>`
+                        dataDate = dataDate +`<small style="line-height:0px">Durée totale: ${duree.getMonth()}mois ${duree.getDate()}jours ${duree.getHours()}h ${duree.getMinutes()}mn ${duree.getSeconds()}sec</small>`
+                        $(`[data-mfdisplay="${el.id_appareil}"]>p`).last().html(dataDate)
+                    }
+
 
                     if(nowTime<finTime && el.actived === true){
                         $(`div[data-mfdisplay="${el.id_appareil}"]`).show('slow')
@@ -427,15 +433,7 @@
 
     // gestion marche forcée
     $('img[data-marcheforce]').on('click',function(){
-        $('#exampleModalLabel').text('')
-        $('#md-modal-body').text('')
-        $('#md-modal-body').html('')
-
-        $('#md-modal-btn1').text('')
-        $('#md-modal-btn1').html('')
-
-        $('#md-modal-btn2').text('')
-        $('#md-modal-btn2').html('')
+        eraseModal()
 
         let id = this.dataset['marcheforce']
 
@@ -443,14 +441,18 @@
         let form = `<form action="/api/marcheforce/add" method="post" id="md-form-mf">
                     <input type="hidden" name="csrf_token" value="${csrf}">
                     <input type="hidden" name="appareil_mf" value="${id}">
-                     <select name="marcheforce">
-                        <option value="1">1</option>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                     </select>
+                    <div>
+                        <label>Début</label>
+                        <input id="datetimepickerdebut" type="text" name="debut">
+                    </div>
+                    <div>
+                        <label>Fin</label>
+                        <input id="datetimepicker" type="text" name="marcheforce">
+                    </div>
+
 
                      </form>`
-
+        $('#md-modal-footer').html(`<input type="submit" id="md-modal-submit" class="btn btn-sm btn-success" value="ajouter une marche forcée">`)
         let xhr = new XMLHttpRequest()
         xhr.open('get', `${url}/api/appareil/${id}`)
         xhr.responseType = 'json'
@@ -458,14 +460,29 @@
 
             $('#exampleModalLabel').text(this.response['appareil'] + ' - Marche Forcée')
             $('#md-modal-body').html(form)
-            $('#md-modal-btn1').text('Valider')
 
-            $('#md-modal-btn1').on('click', function(){
+            // DatetimePicker
+            jQuery('#datetimepicker').datetimepicker({
+            step:5,
+            format:'d-m-Y H:i:s'
+            });
+
+            jQuery('#datetimepickerdebut').datetimepicker({
+            step:5,
+            format:'d-m-Y H:i:s'
+            });
+
+            $('#md-modal-submit').on('click', function(e){
+                e.preventDefault()
                 let form3 = $('#md-form-mf')
-                console.log(form3)
+
                 let sendform = new FormData(form3[0])
                 let xhr2 = new XMLHttpRequest()
                 xhr2.open('post',`${url}/api/marcheforce`)
+                xhr2.onload = function(e){
+                    $('#exampleModal').modal('hide')
+                    eraseModal()
+                }
                 xhr2.send(sendform)
             })
             }
@@ -474,3 +491,9 @@
 
         xhr.send()
     })
+
+    function eraseModal(){
+        $('#exampleModalLabel').text('')
+        $('#md-modal-body').html('')
+        $('#md-modal-footer').html('')
+    }

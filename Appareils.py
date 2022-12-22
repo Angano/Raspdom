@@ -1,3 +1,6 @@
+import datetime
+from config import db
+#from models import Appareil as appareilModel
 import time, json, inspect
 from time import sleep
 try:
@@ -33,7 +36,8 @@ class Common():
             setattr(self,data,gpios[i+self.entre])
 
 
-    def start(self, mode_de_marche, sonde, programmation, ordre):
+    def start(self, mode_de_marche, sonde, programmation, ordre, appareil):
+
         if mode_de_marche == 'arret':
             try:
                 self.off()
@@ -111,6 +115,28 @@ class Common():
             pass
 
 
+    def marcheForce(self):
+        if self.appareil.mf is not None:
+            print('hellooooo')
+            debut = self.appareil.mf.debut
+            fin = self.appareil.mf.fin
+            now = datetime.datetime.now()
+
+            if fin>now>debut and self.appareil.mf.actived == True:
+                print('ça force !')
+                return True
+            else:
+                print('ça ne force pas !')
+                if fin<now and self.appareil.mf.actived == True:
+
+                    self.appareil.mf.actived = False
+                    db.session.add(self.appareil)
+                    db.session.commit()
+                return False
+        else:
+            return False
+
+
 class Eclairage(Common):
     entre = 1
     sortie = 1
@@ -126,30 +152,38 @@ class Eclairage(Common):
         pass
 
     def off(self):
-        self.gpio_off(self.A0)
-        self.current = 'off'
+        if self.marcheForce():
+            self.gpio_on(self.A0)
+            self.current = 'on'
+        else:
+            self.gpio_off(self.A0)
+            self.current = 'off'
 
     def on(self):
         self.gpio_on(self.A0)
         self.current = 'on'
 
     def manu(self):
-        if self.I0 is True:
+        if self.I0 is True or self.marcheForce():
             self.on()
         else:
             self.off()
 
     def test(self, ordre, sonde):
-        try:
-            if ordre.ordre == 'marche':
-                self.on()
-            else:
-                self.off()
-        except ValueError:
-            print(ValueError)
+        if self.marcheForce():
+            self.on()
+        else:
+            try:
+                if ordre.ordre == 'marche':
+                    self.on()
+                else:
+                    self.off()
+            except ValueError:
+                print(ValueError)
 
     def programmation(self,programmation):
-        if programmation:
+
+        if programmation or self.marcheForce():
             self.on()
             self.in_programmation = 'True'
         else:
@@ -167,6 +201,7 @@ class ChauffageR(Common):
     infos_sortie = ['Relais on/off', 'Relais eco' ]
     manuel = [('arret', 'Arrêt'), ('eco', 'Eco'), ('confort', 'Confort')]
     choices_mdm = [('off', 'Off'),('test','Test'), ('eco', 'Eco'),('confort','Confort'), ('prog', 'Programmation')]
+    current = 'Waiting ...'
 
 
 
@@ -194,6 +229,7 @@ class ChauffageR(Common):
         
     """
 
+
     # sonde:Détermine si la valeur actuelle dépasse la consigne mini
     def sonde_min_on(self):
         # si valeur > consigne mini
@@ -209,20 +245,30 @@ class ChauffageR(Common):
             return True
         else:
             return False
-   
+
+
    ## Mode de marche du radiateur
     def mode_off(self):
-        print('arret')
-        self.gpio_off(self.A0)
-        self.gpio_off(self.A1)
-        self.current = 'current_off'
-        
-    def mode_eco(self):
-        print('eco')
-        self.gpio_on(self.A0)
-        self.gpio_off(self.A1)
-        self.current = "current_eco "
+        try:
+            if self.marcheForce() == True:
+                self.confort(self.sonde)
+            else:
+                print('arret')
+                self.gpio_off(self.A0)
+                self.gpio_off(self.A1)
+                self.current = 'current_off'
+        except Exception as e:
+            print('L261')
+            print(e)
 
+    def mode_eco(self):
+        if self.marcheForce():
+            self.confort(self.sonde)
+        else:
+            print('eco')
+            self.gpio_on(self.A0)
+            self.gpio_off(self.A1)
+            self.current = "current_eco "
 
     def mode_confort(self):
         print('confort')
@@ -231,10 +277,7 @@ class ChauffageR(Common):
         self.current = "current_confort"
 
 
-
     ## fin
-
-
     # programmation des modes de marches
     def off(self):
         self.mode_off()
@@ -256,25 +299,29 @@ class ChauffageR(Common):
 
 
     def confort(self,sonde):
-        if sonde.en_service:
-            if not self.sonde_max_on():
-                print('False on chauffe')
-                self.mode_confort()
+        try:
+            if sonde.en_service:
+                if not self.sonde_max_on():
+                    print('False on chauffe')
+                    self.mode_confort()
 
-            elif self.sonde_max_on():
-                print('true stop chauffe')
-                self.mode_off()
+                elif self.sonde_max_on():
+                    print('true stop chauffe')
+                    self.mode_off()
 
+                else:
+                    print('pas compris')
+                    self.mode_off()
             else:
-                print('pas compris')
-                self.mode_off()
-        else:
+                self.mode_confort()
+        except Exception as e:
+            print(e)
             self.mode_confort()
 
 
-
     def programmation(self, programmation):
-        if programmation:
+        if programmation or self.marcheForce() == True:
+            print('force')
             self.confort(self.appareil.appareil_sonde)
             self.in_programmation = True
         else:
@@ -309,9 +356,12 @@ class ChauffeEau(Common):
         pass
 
     def off(self):
-        self.gpio_off(self.A0)
-        self.in_programmation = 'False'
-        self.current = 'off'
+        if self.marcheForce():
+            self.on()
+        else:
+            self.gpio_off(self.A0)
+            self.in_programmation = 'False'
+            self.current = 'off'
 
     def on(self):
         self.gpio_on(self.A0)
@@ -321,22 +371,25 @@ class ChauffeEau(Common):
 
 
     def marche(self):
-        print('ollllllooi')
         self.on()
 
     def test(self, ordre, sonde):
-        try:
-            if ordre.ordre == 'marche':
-                self.on()
-            else:
-                self.off()
-        except ValueError:
-            print(ValueError)
+        if self.marcheForce():
+            self.on()
+        else:
+            try:
+                if ordre.ordre == 'marche':
+                    self.on()
+                else:
+                    self.off()
+            except ValueError:
+                print(ValueError)
 
     def programmation(self,programmation):
-        if programmation:
+        if programmation or self.marcheForce():
             self.on()
         else:
             self.off()
+
 
 

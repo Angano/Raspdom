@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="row row-cols-1 row-cols-md-2 rows-cols-lg-3 pb-2 g-4 mx-auto">
+
     {% for instance in instances %}
       <div class="col mx-auto" style="max-width:585px">
         <div class="card ">
@@ -14,8 +15,10 @@
                     <h2 class="m-0">{{instance.modelAppareil.nom}}</h2>
                     <span>{{instance.instanceAppareil.label.__doc__}}</span>
                 </div>
-                <div data-mfdisplay="{{instance.modelAppareil.id}}" class="m-auto alert alert-primary " style="display:none; height:15px">
-                    <p style="line-height:0px" class="p-0 m-0 text-muted"><small>Marche forcée en cours</small></p></div>
+                <div data-mfdisplay="{{instance.modelAppareil.id}}" class="m-auto alert alert-primary " style="display:none; height:content; padding: 0px 18px">
+                    <p style="" class="p-0 m-0 text-muted"><small>Marche forcée en cours</small></p>
+                    <p class="p-0 m-0"></p>
+                </div>
                 <div class="d-flex">
 
                     <div id="md-mdmr{{instance.modelAppareil.id}}">{{instance.modelAppareil.sortie}}</div>
@@ -175,8 +178,11 @@
                     </div>
                 </div>
             </div>
-            <div style="font-size:10px" class="card-footer text-end mt-1 d-flex justify-content-end" >
-                <div class="alert alert-primary"  data-mf="{{instance.modelAppareil.id}}" style="display:none">Mf</div>
+            <div style="font-size:10px" class="card-footer  text-end mt-1 d-flex justify-content-end" >
+
+                <div class="alert alert-primary" data-mf="{{instance.modelAppareil.id}}" style="display:none">Mf</div>
+
+
                 <div class="w-25" >
                     <a href="{{url_for('edit_appareil', appareil_id=instance.modelAppareil.id)}}" class="btn btn-sm btn-primary " target="_blanck">Détail</a>
 
@@ -184,7 +190,15 @@
             </div>
         </div>
       </div>
+
     {% endfor %}
+    <div>
+
+
+
+
+
+    </div>
 </div>
 
 
@@ -199,9 +213,11 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel" data-md-appareil=""></h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body" id="md-modal-body">
         ...
       </div>
+
       <div class="modal-footer" id="md-modal-footer">
           <span id="md-modal-btn1" class="btn btn-sm btn-success"></span>
           <span id="md-modal-btn2" class="btn btn-sm btn-primary" style="display:none"></span>
@@ -218,8 +234,14 @@
 
 </script>
 
-<script src="{{url_for('static', filename='js/index.js')}}">
-
+<script src="{{url_for('static', filename='js/index.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/datetimepicker/jquery.datetimepicker.css')}}"/>
+<script src="{{url_for('static',filename='vendor/datetimepicker/jquery.js')}}"></script>
+<script src="{{url_for('static',filename='vendor/datetimepicker/build/jquery.datetimepicker.full.min.js')}}"></script>
+<script>
+    jQuery('#datetimepicker').datetimepicker({
+    step:5,
+    format:'Y-m-d H:y:s'
+    });
 </script>
-
 {% endblock %}

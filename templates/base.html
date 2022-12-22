@@ -32,34 +32,27 @@
                          <li class="nav-item" ><a class="nav-link" href="{{ url_for('index')}}">Home</a></li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Appareil</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('appareil')}}">Ajout</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('appareils')}}">Liste</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">GPIO</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
-                                <li><a class="dropdown-item" href="{{ url_for('sondes')}}">Sondes</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('gpios')}}">Liste des GPIOs</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Programmation</a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
                                 <li><a class="dropdown-item" href="{{ url_for('add_programmation')}}">Ajouter</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('liste_programmations')}}">Lister</a></li>
                             </ul>
                         </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li class=""><a class="dropdown-item " aria-current="page" href="{{url_for('user')}}">Add user</a></li>
                                 <li class=""><a class="dropdown-item " aria-current="page" href="{{url_for('users')}}">Users</a></li>
+                                <li>
+                <hr class="dropdown-divider">
+              </li>
+
+                                <li><a class="dropdown-item" href="{{ url_for('sondes')}}">Sondes</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('gpios')}}">Liste des GPIOs</a></li>
+                                <hr class="dropdown-divider">
+                                 <li><a class="dropdown-item" href="{{ url_for('appareil')}}">+ Appareil </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('appareils')}}">Liste Appareils</a></li>
                             </ul>
                         </li>
                         <li class=""><a class="nav-link" href="{{url_for('profil')}}">{{current_user.username}}</a></li>

@@ -100,7 +100,7 @@
                             </div>
 
                             <input id="md-cursoreco-{{instance.modelAppareil.id}}" data-target="eco-{{instance.modelAppareil.id}}" class=" md-cursor-{{instance.modelAppareil.id}} md-min "
-                                   style="display:none;height: 60px;width:100%" orient="vertical" value="{{instance.modelAppareil.appareil_sonde.min}}" min="15" max="25" step=0.5 type="range" name=""  >
+                                   style="display:none;height: 60px;width:100%" orient="vertical" value="{{instance.modelAppareil.min}}" min="15" max="25" step=0.5 type="range" name=""  >
 
                         </div>
                         <div style="cursor: pointer;text-align:left; width:60px;" class=" md-panel border-bottom border-danger border-2">
@@ -113,7 +113,7 @@
 
                             <input id="md-cursorconfort-{{instance.modelAppareil.id}}" data-target="confort-{{instance.modelAppareil.id}}"
                                    class="md-cursor-{{instance.modelAppareil.id}} md-max " style="display:none;height: 60px;width:100%" orient="vertical"
-                                   value="{{instance.modelAppareil.appareil_sonde.max}}" min="15" max="25" step=0.5 type="range" name=""  >
+                                   value="{{instance.modelAppareil.max}}" min="15" max="25" step=0.5 type="range" name=""  >
                         </div>
                     </div>
                     {% endif %}

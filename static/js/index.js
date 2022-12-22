@@ -332,6 +332,7 @@
                     var el = element.appareils[index]
                     $(`#md-mdmr${el.id_appareil}`).text(el.status)
 
+                    ////////////// Gestion affichage du temps restant sur mode forcée
                     // convertion des dates
                     let mois = ['Janv','Fev','Mars','Avr','Mai','Juin','Jui','Août','Sept','Oct','Nov','Dec']
                     let jours = ['Dim','Lundi','Mardi','Mer','Jeudi','Vend','Sam']
@@ -343,36 +344,34 @@
                     let finData = jours[fin.getDay()]+'-'+ fin.getDate()+'-'+mois[fin.getMonth()]+'-'+fin.getFullYear() +' <b>'+('0'+fin.getUTCHours()).slice(-2)+':'+('0'+fin.getMinutes()).slice(-2)+':'+('0'+fin.getSeconds()).slice(-2)+'</b>'
 
                     let now = new Date()
-
-
                     let nowTime = now.getTime()+3600000
                     let debTime = debut.getTime()
                     let finTime = fin.getTime()
-
 
                     if(finTime>nowTime && el.actived == true){
                         var maDate = new Date(finTime-nowTime-3600000)
                         var maDateDebut = new Date(debTime-nowTime-3600000)
                         var duree = new Date(finTime-debTime-3600000)
 
+                        console.log('1',calculRestant(maDateDebut))
+                        console.log('1',calculRestant(maDate))
+                        console.log('1',calculRestant(duree))
+
+  /////////////////////                      ///
+
                         var dataDate = ``
                         if(debTime>nowTime){
-                            dataDate = dataDate +`<small style="line-height:0px">Début dans: ${maDateDebut.getMonth()}mois ${maDateDebut.getDate()}jours ${maDateDebut.getHours()}h ${maDateDebut.getMinutes()}mn ${maDateDebut.getSeconds()}sec</small><br>`
+                            dataDate = dataDate +`<small style="line-height:0px">Début dans: ${calculRestant(maDateDebut)}</small><br>`
                             }
-                        dataDate = dataDate +`<small style="line-height:0px">Fin dans:  ${maDate.getMonth()}mois ${maDate.getDate()}jours  ${maDate.getHours()}h ${maDate.getMinutes()}mn ${maDate.getSeconds()}sec</small><br>`
-                        dataDate = dataDate +`<small style="line-height:0px">Durée totale: ${duree.getMonth()}mois ${duree.getDate()}jours ${duree.getHours()}h ${duree.getMinutes()}mn ${duree.getSeconds()}sec</small>`
+                        dataDate = dataDate +`<small style="line-height:0px">Fin dans: ${calculRestant(maDate)}</small><br>`
+                        dataDate = dataDate +`<small style="line-height:0px">Durée:  ${calculRestant(duree)}</small>`
                         $(`[data-mfdisplay="${el.id_appareil}"]>p`).last().html(dataDate)
                     }
 
-
                     if(nowTime<finTime && el.actived === true){
                         $(`div[data-mfdisplay="${el.id_appareil}"]`).show('slow')
-
                     }else{
-
-                    $(`div[data-mfdisplay="${el.id_appareil}"]`).hide('slow')
-
-
+                        $(`div[data-mfdisplay="${el.id_appareil}"]`).hide('slow')
                     }
 
 
@@ -497,3 +496,38 @@
         $('#md-modal-body').html('')
         $('#md-modal-footer').html('')
     }
+
+// permet de retourner un calcul de temps restant
+function calculRestant(dataTime){
+
+                        var resultat = ''
+                        dataTime = dataTime.getTime()+3600000
+
+                        const convSeconde = 1000
+                        const convMinute = 60*convSeconde
+                        const convHeure = 60*convMinute;
+                        const convJour = 24*convHeure
+
+                        var resteJour = Math.trunc(dataTime/convJour)+'j '
+                        if(resteJour === '0j '){
+                            resteJour=''}
+                        var temp = dataTime%convJour
+                        var resteHeure = ('0'+Math.trunc(temp/convHeure)).slice(-2)+'h:'
+
+                        if(resteJour === '' && resteHeure === '00h:'){
+                            resteHeure = ''}
+
+                        temp = temp%convHeure
+                        var resteMinute = ('0'+Math.trunc(temp/convMinute)).slice(-2)+'mn:'
+
+                        if(resteJour === '' && resteHeure === '' && resteMinute === '00mn:'){
+                            resteMinute = ''}
+
+                        temp= temp%convMinute
+                        var resteSeconde = ('0'+Math.trunc(temp/convSeconde)).slice(-2)+'s'
+
+
+                        // Mise en forme de l'affichage
+
+                        var resultat = resteJour+resteHeure+resteMinute+resteSeconde
+                        return resultat}

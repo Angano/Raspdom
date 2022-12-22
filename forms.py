@@ -55,8 +55,8 @@ class GpioForm(FlaskForm):
 class SondeForm(FlaskForm):
     choices = [('deg','T°c'),('cm','Cm')]
 
-    min = DecimalField(render_kw={'style': 'width: 50px'})
-    max = DecimalField(render_kw={'style': 'width: 50px'})
+    min = DecimalField(render_kw={'style': 'width: 50px'},default=18.0)
+    max = DecimalField(render_kw={'style': 'width: 50px',},default =19.0)
     unite = SelectField(choices=choices)
     en_service = BooleanField()
     capteur = SelectField()
@@ -77,7 +77,7 @@ class ReglageSondeForm(FlaskForm):
 
 class AppareilForm(FlaskForm):
     choices = list()
-
+    choices2 = [(data.id,data.nom) for data in Sonde.query.all()]
     for name, obj in inspect.getmembers(Appareils):
 
         if inspect.isclass(obj) :
@@ -90,13 +90,17 @@ class AppareilForm(FlaskForm):
     nom = StringField()
     description = StringField()
     gpios = FieldList(FormField(GpioForm))
-    sondes = FieldList(FormField(SondeForm))
+    #sondes = FieldList(FormField(SondeForm))
+    sonde = SelectField(choices=choices2,validate_choice=False)
     sonde_actived = BooleanField()
+    min = DecimalField(render_kw={'style': 'width: 50px'})
+    max = DecimalField(render_kw={'style': 'width: 50px'})
 
 class Ds1820bForm(FlaskForm):
     #nom = StringField(render_kw={'readonly':'readonly'})
     present = BooleanField()
     info = StringField()
+    en_service = BooleanField()
 
 
 class ProgrammationForm(FlaskForm):

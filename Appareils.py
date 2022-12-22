@@ -202,6 +202,7 @@ class ChauffageR(Common):
     manuel = [('arret', 'Arrêt'), ('eco', 'Eco'), ('confort', 'Confort')]
     choices_mdm = [('off', 'Off'),('test','Test'), ('eco', 'Eco'),('confort','Confort'), ('prog', 'Programmation')]
     current = 'Waiting ...'
+    sonde_en_service = False
 
 
 
@@ -233,7 +234,8 @@ class ChauffageR(Common):
     # sonde:Détermine si la valeur actuelle dépasse la consigne mini
     def sonde_min_on(self):
         # si valeur > consigne mini
-        if float(self.appareil.appareil_sonde.sonde_valeur_id.valeur)>float(self.appareil.appareil_sonde.min):
+        if float(self.appareil.appareil_sonde.sonde_valeur_id.valeur)>float(self.appareil.min):
+            print(self.appareil.min,'print mini')
             return True
         else:
             return False
@@ -241,7 +243,7 @@ class ChauffageR(Common):
 
     # sonde:Détermine si la valeur actuelle dépasse la consigne max
     def sonde_max_on(self):
-        if float(self.appareil.appareil_sonde.sonde_valeur_id.valeur)>float(self.appareil.appareil_sonde.max):
+        if float(self.appareil.appareil_sonde.sonde_valeur_id.valeur)>float(self.appareil.max):
             return True
         else:
             return False
@@ -284,7 +286,7 @@ class ChauffageR(Common):
 
 
     def eco(self, sonde):
-        if sonde.en_service:
+        if sonde.en_service and self.appareil.sonde_actived:
             if not self.sonde_min_on():
                 #print('true on chauffe')
                 self.mode_confort()
@@ -300,7 +302,7 @@ class ChauffageR(Common):
 
     def confort(self,sonde):
         try:
-            if sonde.en_service:
+            if sonde.en_service and self.appareil.sonde_actived:
                 if not self.sonde_max_on():
                     print('False on chauffe')
                     self.mode_confort()

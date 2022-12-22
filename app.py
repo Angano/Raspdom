@@ -149,7 +149,8 @@ def appareil():
         db.session.commit()
 
         return redirect(url_for('edit_appareil', appareil_id=appareil.id))
-    
+    else:
+        print(appareilform.errors)
     #appareilform.categorie_appareil_id.choices = [(data.id, data.nom) for data in Categorieappareil.query.all()]
     return render_template('appareil/appareil.html', appareilform=appareilform, mode_de_marcheform=mode_de_marcheform)
 
@@ -169,7 +170,7 @@ def edit_appareil(appareil_id):
 
     if appareilform.validate_on_submit():
 
-        if instance_appareil.sonde:
+        """if instance_appareil.sonde:
             sonde = Sonde.query.get(int((appareilform.sondes.data)[0]['capteur']))
             if sonde is None:
                 sonde = Sonde()
@@ -184,8 +185,8 @@ def edit_appareil(appareil_id):
 
             db.session.add(sonde)
             db.session.commit()
-            appareil.sonde_id = sonde.id
-
+            appareil.sonde_id = sonde.id"""
+        appareil.sonde_id = appareilform.sonde.data
         appareil.nom = appareilform.nom.data
         appareil.categorieappareil = appareilform.categorieappareil.data
         appareil.description = appareilform.description.data
@@ -194,7 +195,8 @@ def edit_appareil(appareil_id):
         gpios_delete = Gpio.query.filter_by(appareil_id=appareil_id).all()
         gpios_order = list()
         if appareil.sonde_id:
-            gpios_order.append('ds1820_'+str(sonde.id))
+            #gpios_order.append('ds1820_'+str(sonde.id))
+            gpios_order.append('ds1820_' + 'rien')
         for data in gpios_delete:
             db.session.delete(data)
             db.session.commit()
@@ -257,14 +259,14 @@ def edit_appareil(appareil_id):
             appareilform.gpios.append_entry(gpioform)
 
 
-    if instance_appareil.sonde:
+    if instance_appareil.sonde or False:
 
         #sonde = Sonde.query.filter_by(appareil_id=appareil.id).first()
         sonde = appareil.sonde
         if sonde is None:
             sonde = Sonde()
 
-        if appareilform.sondes.__len__()<1:
+        """if appareilform.sondes.__len__()<1:
             sondeform = SondeForm(obj=sonde)
 
             sondeform.unite = sonde.unite
@@ -273,7 +275,7 @@ def edit_appareil(appareil_id):
             sondeform.en_service = sonde.en_service
             sondeform.type_sonde = sonde.type_sonde
             sondeform.capteur = sonde.id
-            appareilform.sondes.append_entry(sondeform)
+            appareilform.sondes.append_entry(sondeform)"""
 
 
     #appareilform.categorie_appareil_id.choices = [(data.id, data.nom) for data in Categorieappareil.query.all()]
@@ -636,6 +638,7 @@ def temp_mini(id):
     if request.method == 'POST':
         appareil = Appareil.query.get(id)
         appareil.sonde.min = request.form['value']
+        appareil.min = request.form['value']
         db.session.add(appareil)
         db.session.commit()
     return 'yes'
@@ -645,6 +648,7 @@ def temp_max(id):
     if request.method == 'POST':
         appareil = Appareil.query.get(id)
         appareil.sonde.max = request.form['value']
+        appareil.max = request.form['value']
         db.session.add(appareil)
         db.session.commit()
     return 'yes'

@@ -22,6 +22,8 @@ class Appareil(db.Model):
     manuel = db.relationship('Manuel', uselist=False, backref='appareil_ordre', lazy=True)
     label = db.Column(db.String(250))
     sonde_actived = db.Column(db.Boolean,default=False, nullable=False)
+    min = db.Column(db.Float(),default=17.0)
+    max = db.Column(db.Float(),default=19.0)
     #mf = db.Column(db.Integer, db.ForeignKey('mf.id'), nullable=True)
     mf = db.relationship('Mf',  cascade="delete",uselist=False, backref='app_mf', lazy=True)
 
@@ -46,8 +48,8 @@ class Appareil(db.Model):
 class Sonde(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(200))
-    min = db.Column(db.Float())
-    max = db.Column(db.Float())
+    min = db.Column(db.Float(),default=17.0)
+    max = db.Column(db.Float(),default=19.0)
     unite = db.Column(db.String(20), default='')
     present = db.Column(db.Boolean(),default=False)
     appareil = db.relationship('Appareil', backref='appareil_sonde', lazy=True)

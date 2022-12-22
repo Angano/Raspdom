@@ -16,10 +16,13 @@
                                     <div class="card-body d-flex justify-content-between">
                                         {{ appareilform.csrf_token }}
                                         <div>{{appareilform.nom.label}}{{appareilform.nom}}</div>
+                                        {% if isSonde %}
                                          <div>{{appareilform.min.label}}{{appareilform.min}}</div>
                                          <div>{{appareilform.max.label}}{{appareilform.max}}</div>
+
                                         <div>{{appareilform.sonde.label}}{{appareilform.sonde}}</div>
                                         <div><label for="sonde_actived">Régulation avec la sonde: </label>{{appareilform.sonde_actived}}</div>
+                                        {% endif %}
                                             <div>{{appareilform.description.label}}{{appareilform.description}}</div>
                                         {{appareilform.categorieappareil(class="d-none")}}
 
@@ -50,33 +53,7 @@
 
 
 
-                    {% if isSonde %}
-                    <div class="row">
-                        <div class="col-12">
 
-
-
-
-                         <div class="card ">
-                        <div class="card-header">Sondes</div>
-                        <div class="card-body">
-                        {% for data in appareilform.sondes %}
-                          <p>{{data.csrf_token}}</p>
-                            <div class="d-flex justify-content-center">
-
-                                 <p>{{data.capteur.label}} {{data.capteur}}</p>
-
-                                <p>{{data.unite.label}} {{data.unite}} {{data.en_service.label}}  {{data.en_service}}</p>
-
-                            </div>
-
-                        {% endfor %}
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-
-                    {% endif %}
 
 
                         <div class="text-center mx-auto my-4">

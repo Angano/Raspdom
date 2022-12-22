@@ -18,7 +18,7 @@
                                         <div>{{appareilform.nom.label}}{{appareilform.nom}}</div>
                                             <div>{{appareilform.description.label}}{{appareilform.description}}</div>
                                         <div>Catégorie de l'appareil: {{appareilform.categorieappareil}}</div>
-                                        <div>Sonde activée: {{appareilform.sonde_actived}}</div>
+
                                     </div>
 
                     </div>
@@ -45,33 +45,7 @@
 
 
 
-                    {% if isSonde %}
-                    <div class="row">
-                        <div class="col-12">
 
-
-
-
-                         <div class="card ">
-                        <div class="card-header">Sondes</div>
-                        <div class="card-body">
-                        {% for data in appareilform.sondes %}
-                          <p>{{data.csrf_token}}</p>
-                            <div class="d-flex justify-content-center">
-
-                                 <p>{{data.capteur.label}} {{data.capteur}}</p>
-                                 <p>{{data.min.label}}  {{data.min}} {{data.max.label}}  {{data.max}}</p>
-                                <p>{{data.unite.label}} {{data.unite}} {{data.en_service.label}}  {{data.en_service}}</p>
-
-                            </div>
-
-                        {% endfor %}
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-
-                    {% endif %}
 
 
                         <div class="text-center mx-auto my-4">

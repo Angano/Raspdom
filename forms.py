@@ -96,6 +96,16 @@ class AppareilForm(FlaskForm):
     min = DecimalField(render_kw={'style': 'width: 50px'})
     max = DecimalField(render_kw={'style': 'width: 50px'})
 
+class App2Form(FlaskForm):
+
+    choices2 = [(data.id, data.nom) for data in Sonde.query.all()]
+    nom = StringField()
+    description = StringField()
+    # sondes = FieldList(FormField(SondeForm))
+    sonde = SelectField(choices=choices2, validate_choice=False)
+    sonde_actived = BooleanField()
+
+
 class Ds1820bForm(FlaskForm):
     #nom = StringField(render_kw={'readonly':'readonly'})
     present = BooleanField()

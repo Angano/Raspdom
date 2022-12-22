@@ -8,7 +8,7 @@ from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import LoginManager, login_required, login_user, \
                         logout_user, current_user
 
-from forms import UserForm, LoginForm, EditUserForm, AppareilForm, GpioForm, ProgrammationForm, ModeDeMarcheForm, SondeForm, Ds1820bForm, ReglageSondeForm
+from forms import App2Form, UserForm, LoginForm, EditUserForm, AppareilForm, GpioForm, ProgrammationForm, ModeDeMarcheForm, SondeForm, Ds1820bForm, ReglageSondeForm
 from models import User, Appareil, Gpio, Programmation, ModeDeMarche, Sonde, Manuel, Status, ValeurSonde, Mf
 from Appareils import Eclairage, ChauffageR, ChauffeEau
 
@@ -154,6 +154,25 @@ def appareil():
     #appareilform.categorie_appareil_id.choices = [(data.id, data.nom) for data in Categorieappareil.query.all()]
     return render_template('appareil/appareil.html', appareilform=appareilform, mode_de_marcheform=mode_de_marcheform)
 
+#   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+@app.route('/appareil2/<int:appareil_id>',methods=['POST','GET'])
+def edit_appareil2(appareil_id):
+    appareil = Appareil.query.get(appareil_id)
+    instance_appareil = globals()[appareil.categorieappareil](appareil)
+    form = App2Form(obj=appareil, data=request.form)
+    if form.validate_on_submit():
+        appareil.nom = form.nom.data
+        appareil.sonde_actived = form.sonde_actived.data
+        appareil.description = form.description.data
+        #appareil.sonde = form.sonde.data
+        appareil.sonde = Sonde.query.get(form.sonde.data)
+        db.session.add(appareil)
+        db.session.commit()
+    else:
+        print(form.errors,'errrr')
+    return render_template('appareil/edit2.html', appareil=appareil, form=form, instance_appareil=instance_appareil)
+
+#   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 @app.route('/appareil/<int:appareil_id>', methods=['POST','GET'])
 def edit_appareil(appareil_id):

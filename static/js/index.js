@@ -330,7 +330,7 @@
                 for(index in tab){
 
                     var el = element.appareils[index]
-                    $(`#md-mdmr${el.id_appareil}`).text(el.status)
+                    $(`#md-mdmr${el.id_appareil}`).attr('src','/static/assets/'+el.status+'.webp')
 
                     ////////////// Gestion affichage du temps restant sur mode forcée
                     // convertion des dates
@@ -352,12 +352,7 @@
                         var maDate = new Date(finTime-nowTime-3600000)
                         var maDateDebut = new Date(debTime-nowTime-3600000)
                         var duree = new Date(finTime-debTime-3600000)
-
-                        console.log('1',calculRestant(maDateDebut))
-                        console.log('1',calculRestant(maDate))
-                        console.log('1',calculRestant(duree))
-
-  /////////////////////                      ///
+                    ////////////////////////
 
                         var dataDate = ``
                         if(debTime>nowTime){
@@ -387,9 +382,10 @@
 
                 }
 
-
+                // Affichage heure courante serveur
                 $('#dateMachine').text(element.dateMachine)
 
+                // Affichage statut GPIO
                 if(element.mode == 'OUTPUT'){
                     if(element.level == '0'){
                         $(`[data-gpio="Gpio_${element.gpio}"]`).css('background','green')

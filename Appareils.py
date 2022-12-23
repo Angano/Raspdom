@@ -81,7 +81,7 @@ class Common():
                 self.off()
         elif mode_de_marche == 'manu':
             print('manu')
-            print(self.current)
+
         elif mode_de_marche == 'hs':
             print('hs')
         elif mode_de_marche == 'es':
@@ -154,14 +154,14 @@ class Eclairage(Common):
     def off(self):
         if self.marcheForce():
             self.gpio_on(self.A0)
-            self.current = 'on'
+            self.current = self.appareil.categorieappareil+'_on'
         else:
             self.gpio_off(self.A0)
-            self.current = 'off'
+            self.current = self.appareil.categorieappareil+'_off'
 
     def on(self):
         self.gpio_on(self.A0)
-        self.current = 'on'
+        self.current = self.appareil.categorieappareil+'_on'
 
     def manu(self):
         if self.I0 is True or self.marcheForce():
@@ -258,7 +258,7 @@ class ChauffageR(Common):
                 print('arret')
                 self.gpio_off(self.A0)
                 self.gpio_off(self.A1)
-                self.current = 'current_off'
+                self.current = self.appareil.categorieappareil+'_off'
         except Exception as e:
             print('L261')
             print(e)
@@ -270,13 +270,13 @@ class ChauffageR(Common):
             print('eco')
             self.gpio_on(self.A0)
             self.gpio_off(self.A1)
-            self.current = "current_eco "
+            self.current = self.appareil.categorieappareil+'_eco'
 
     def mode_confort(self):
         print('confort')
         self.gpio_on(self.A0)
         self.gpio_on(self.A1)
-        self.current = "current_confort"
+        self.current = self.appareil.categorieappareil+'_confort'
 
 
     ## fin
@@ -363,12 +363,12 @@ class ChauffeEau(Common):
         else:
             self.gpio_off(self.A0)
             self.in_programmation = 'False'
-            self.current = 'off'
+            self.current = self.appareil.categorieappareil+'_off'
 
     def on(self):
         self.gpio_on(self.A0)
         self.in_programmation = 'True'
-        self.current = 'on'
+        self.current = self.appareil.categorieappareil+'_on'
 
 
 

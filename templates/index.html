@@ -21,24 +21,13 @@
                 </div>
                 <div class="d-flex">
 
-                    <div id="md-mdmr{{instance.modelAppareil.id}}">{{instance.modelAppareil.sortie}}</div>
-                    {% if instance.modelAppareil.categorieappareil=='Eclairage' %}
-                    <span style="width:47px">
-                        <img src="{{url_for('static',filename='assets/ampoule.png')}}"  height="100%">
-                    </span>
-                    {% elif instance.modelAppareil.categorieappareil=='ChauffageR' %}
                      <span style="width:47px; margin-right:0.75rem">
-                        <img src="{{url_for('static',filename='assets/radiator.png')}}"  height="100%">
-                    </span>
-                    {% elif instance.modelAppareil.categorieappareil=='ChauffeEau' %}
-                    <span style="width:47px; margin-right:0.75rem">
-                        <img src="{{url_for('static',filename='assets/ce.png')}}"  height="100%">
-                    </span>
-                    {% else %}
-                    <span style="width:47px; margin-right:0.75rem">
-                      {{instance.modelAppareil.categorieappareil}}
-                    </span>
-                    {% endif %}
+                         {% if instance.modelAppareil.sortie is not none %}
+                         {% set url_img = '/assets/'+instance.modelAppareil.sortie+'.webp' %}
+                        <img id="md-mdmr{{instance.modelAppareil.id}}" src="{{url_for('static',filename=url_img)}}"  alt="{{instance.modelAppareil.sortie}}" height="100%">
+                        {% endif %}
+                     </span>
+
 
                     {% if instance.modelAppareil.appareil_sonde.sonde_valeur_id %}
                     <div class="d-flex flex-column {% if instance.modelAppareil.sonde_actived ==False %} d-none {% endif %}">

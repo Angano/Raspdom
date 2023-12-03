@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% set days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'] %}
+
+{% block content %}
+    <div class="row">
+
+        <div class="col-md-8 card">
+            <div class="row">
+                <div class="col-md-11 mx-auto">
+                    <h4>{{appareil.nom}} {{appareil.categorieappareil}}</h4>
+                    <hr>
+
+                        <div class="d-flex justify-content-around">
+                            {% for select, data in modedemarche %}
+                            <div style="width:120px" data-mdm="{{select}}" class=" btn btn-sm {% if select==mode_de_marcheform.mode_de_marche.data %} btn-success {% else %} btn-secondary {% endif %}">{{data}}</div>
+                            {% endfor %}
+                        </div>
+
+                            <form action="" method="post" id="form_mdm" class="d-none">
+                                <input type="hidden" disabled value="{{appareil.id}}" id="app">
+                            {% for field in mode_de_marcheform %}
+                                <p> {{ field }}</p>
+                            {% endfor %}
+                                <div class="col-md-6 mx text-center"><input class="btn btn-sm btn-info" type="submit"></div>
+                          
+
+
+                </div>
+                <div class="border border-1 mt-3">
+                            <h4>Information </h4>
+                            <div class="d-flex">
+
+                                <div class="mx-auto d-none" id="manuel" >
+                                    <h5>Test</h5>
+                                    {% for data in instance_appareil.manuel %}
+                                        <alert class="btn btn-sm btn-info" data-appareil="{{appareil.id}}" data-ordre="{{data[0]}}">{{ data[1] }}</alert>
+                                    {% endfor %}
+                                </div>
+                                <div class="mx-auto">
+                                    <h5>Entrées</h5>
+                           
+
+                                        {% for data in instance_appareil.infos_entre %}
+                                            
+                                        <button class="btn btn-sm btn-info">{{ data }}</button>
+                                        {% if sondeform %}
+                                            {% if appareil.sonde_id %}
+                                                <button class="btn btn-sm btn-success">
+                                                    {{ appareil.appareil_sonde.info}} : {{ appareil.appareil_sonde.sonde_valeur_id.valeur}} {{ appareil.appareil_sonde.unite}} 
+                                                </button>
+                                                {{sondeform.en_service.label}}
+                                                {{sondeform.en_service}}
+                                            {% endif %}
+                                            <div class="my-3">
+                                                <div>
+                                                  <label for="min-range" style="width: 60px;">Eco </label>
+                                                    <input type="range" name="min-range" min="14" max="25" step="0.5" id="min-range" value="{{appareil.appareil_sonde.min}}">
+                                                    <input id="span-min" readonly style="width:50px" value="{{appareil.appareil_sonde.min}}">
+                                                  
+                                                </div>
+                                                <div>
+                                                    <label for="max-range" style="width: 60px;">Confort </label> 
+                                                    <input type="range" name="max-range" min="14" max="25" step="0.5" id="max-range" value="{{appareil.appareil_sonde.max}}">
+                                                    <input id="span-max" readonly style="width:50px" value="{{appareil.appareil_sonde.max}}">
+                                                
+                                                </div>
+                                               
+
+                                                     
+                                                  
+                                                     <p class="d-none">{{sondeform.min}}</p>
+                                                   <p class="d-none">{{sondeform.max}}</p>
+                                             
+                                                  
+                                                   <p>{{sondeform.csrf_token}}</p>
+
+                                                   </div>
+                                                {% endif %}
+
+                                                </form>
+                                               
+                                                
+                                            
+                                        {% endfor%}
+                                </div>
+                                <div class="mx-auto">
+                                <h5>Sorties</h5>
+                                <div class="d-flex justify-content-between">
+
+
+                                
+                                   {% for tabs in tab %}
+                                   <ul title="mode:{{tabs.mode}}, level:{{tabs.level}}, gpio:{{tabs.gpio}}">
+                                
+                                    
+                                    {% if tabs.level == '0' %}
+                                    <li class="btn badge bg-success">{{tabs.info}}</li>
+                                    {% else %}
+                                    <li class="btn badge bg-secondary">{{tabs.info}}</li>
+                                    {% endif %}
+                                   </ul>
+                                   {%endfor%}
+                             </div>
+                                </div>
+
+                            </div>
+                     
+
+
+                </div>
+            </div>
+        </div>    
+        <div class="col-md-3 card  py-3">
+            <h6>
+                Listes des programmations
+            </h6>
+            <ul>
+                {% for programmation in programmations %}
+                <li>
+                    {{days[programmation.day-1]}}: {{'%02d' % programmation.start}}:{{'%02d' % programmation.start_min}}=>{{'%02d' % programmation.end}}:{{'%02d' % programmation.end_min}}
+                    <a href="{{url_for('delete_programmation_from_appareil', programmation_id=programmation.id)}}">Del</a>
+                    <a href="{{url_for('edit_programmation_from_appareil', programmation_id=programmation.id)}}">Edit</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{{url_for('add_programmation_by_app',appareil_id=appareil.id)}}" class="btn d-none btn-sm btn-success">Ajouter une programmation</a>
+            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une programmation</button>
+        </div>
+    </div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 780px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter une programmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form action="{{url_for('add_programmation_by_app_api',appareil_id=appareil.id )}}" method="post" id="form_prog">
+            <input type="hidden" name="appareil" value="{{appareil.id}}">
+            <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="modal-body">
+            <div class="d-flex" id="zone-saisie">
+                <div id="add-day"></div>
+
+
+              <div class=" d-flex justify-content-between" id="tab-deb">
+                  <div class="" id="deb">Début
+                    <input style="width:70px;" type="text" disabled id="i-deb" value="00:00">
+                   &#128197
+                  </div>
+
+                  <label class="d-none" for="hStart">Heure
+                      <select id="hStart" name="start">
+                          {% for i in range(0,24) %}
+                          <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                      </select>
+                  </label>
+                     <label class="d-none" for="mStart">Minute
+                      <select id="mStart" name="start_min">
+                          {% for i in range(0,60) %}
+                          <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                      </select>
+                  </label>
+              </div>
+              <div class=" d-flex justify-content-between" id="tab-fin">
+                  <div id="fin">Fin
+                    <input style="width:70px;" type="text" disabled id="i-fin" value="00:00"/>&#128197
+                  </div>
+                  
+                  <label class="d-none" for="hEnd">Heure
+                      <select id="hEnd" name="end">
+                          {% for i in range(0,24) %}
+                          <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                      </select>
+                  </label>
+                     <label class="d-none" for="mEnd">Minute
+                      <select id="mEnd" name="end_min">
+                          {% for i in range(0,60) %}
+                          <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                      </select>
+                  </label>
+              </div>
+              <div id="result"></div>
+              </div>
+              <span class="d-none">
+
+            <div class=" d-flex justify-content-between">Jour</div>
+              <select name="day" id="select-day">
+                  {% for day in days %}
+                  <option value="{{days.index(day)+1}}">{{day}}</option>
+                  {% endfor %}
+              </select>
+              </span>
+
+
+
+             
+              
+               
+                <div class="d-flex justify-content-between my-3">
+                    <div id="toto" class="w-50 card mx-1">
+                        <p class="card-header">Heures</p>
+                        <div class="card-body" id="bob">
+
+                             {% for i in range(0,24) %}
+                    <span class="my-1 btn btn-sm btn-primary">{{i}}</span>
+                    {% endfor %}
+                        </div>
+                    
+                    </div>
+                    <div id="titi" class="w-50 card mx-1">
+                        <div class="card-header">Minutes</div>
+                        <div class="card-body">
+                            {% for i in range(0,60,5) %}
+                    <span class="my-1 btn btn-sm btn-primary">{{i}}</span>
+                    {% endfor %}
+                        </div>
+                    
+                    </div>
+                </div>
+                    <div id="days" class="card" style="padding-top:1rem; text-align:center">
+                        <div class="card-body" id="bof">
+                              {% for day in days %}
+                  <span class="my-1 btn btn-sm btn-primary" data-value="{{days.index(day)+1}}">{{day}}</span>
+                  {% endfor %}
+                        </div>
+                  
+
+                </div>
+           
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" value="Enregistrer"  class="btn btn-primary"/>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#manuel>alert').on('click',function(e){
+            var appareil = $(e.target).data('appareil')
+            var ordre = $(e.target).data('ordre')
+
+            var data = 'data='+ordre+'_'+appareil
+            xml = new XMLHttpRequest()
+            xml.open('post', 'http://localhost:5000/test_app',true)
+            xml.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xml.onload = function(){
+                console.log('post')
+            }
+            xml.send(data)
+        })
+    </script>
+    <script src="{{url_for('static',filename='js/appareil_test.js')}}"></script>
+{% endblock %}

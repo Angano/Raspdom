@@ -1,0 +1,265 @@
+.md-add-composant{
+    font-size:0.7rem!important;
+    padding:0px 4px!important;
+}
+.form-add-composant{
+    display:inline;
+    margin-left:5px;
+}
+    input:focus{
+    border:none;
+}
+.md-input{
+    width:100%;
+    border-style:none;
+
+}
+.bg-danger-subtle{
+    background-color:#e876b6;
+    color:white;
+}
+.PWR3V{
+    background-color:#dc8335;
+    color:white;
+}
+
+.add_appareil{
+    width:max-content;
+}
+
+.add_appareil li{
+    display: flex;
+    justify-content:space-between;
+    }
+
+.add_appareil li:hover{
+    background-color:#8080802e;
+}
+td span:hover{
+    cursor:pointer;
+    }
+
+.md-active{
+    color: rgba(39, 6, 6, 0.966)!important;
+    border-radius:5px;
+    padding: 0.15rem 0.3rem!important;
+    background-color:white;
+    border: solid 1px #8080804a;
+    border-bottom-width: 5px;
+    border-bottom-style: solid ;
+    border-bottom-color:black;
+    margin-top:0.15rem;
+    margin-bottom:0.15rem;
+}
+
+.nav-item:hover{
+    background-color:white;
+    border-radius:5px;
+}
+
+#md-nav-left{
+    height:100%;
+    overflow:auto;
+
+}
+
+#md-nav-left li a:hover{
+    color:black !important;
+}
+
+
+#md-header{
+    height:100%
+}
+
+#md-nav-left li a{
+    font-size:0.8rem;
+    padding:0.3rem 0.3rem;
+    color:#b0c0ce;
+    text-decoration:none;
+    display:block;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+#md-nav-right{
+    margin-top:0px!important
+    }
+
+#md-nav-right li{
+    line-height:1;
+    align-self:center;
+    list-style:none;
+}
+
+#md-nav-right li a{
+    font-size:0.8rem;
+    padding:0.3rem 0.3rem;
+    color:#b0c0ce;
+    text-decoration:none;
+    display:block;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+#md-nav-right li a:hover{
+    color:black !important;
+}
+
+#dateMachine{
+    color:white;
+    width:200px;
+    text-align:center;
+
+}
+
+li img{
+    vertical-align: -moz-middle-with-baseline;
+}
+
+.md-icon-connect{
+    display:flex;
+    align-items: center;
+    position:relative;
+    width:36px;
+}
+
+.md-connect-fail{
+    position:absolute;opacity:0.7
+}
+
+.unicode{
+    font-size:0.95rem
+}
+.unicode2{
+    font-size:0.95rem
+}
+
+#md-nav-bar-top{
+    height:8%;
+}
+
+.container-fluid{
+    height:87%
+}
+
+#md-footer{
+    height:5%
+}
+
+.md-cursor{
+    cursor:pointer
+}
+
+.card{
+    box-shadow: 10px 10px 10px gray;
+    }
+.md-card-prog{
+    /*box-shadow: 10px 10px 10px gray;*/
+    border-radius: 8px;
+    padding:0.25rem 0rem;
+}
+
+.md-card{
+    box-shadow: 10px 10px 10px gray;
+    border-radius: 8px;
+    }
+
+.md-status{
+    /*box-shadow: 10px 10px 10px gray;*/
+    border-radius: 4px;
+    /*margin-top:1.5rem;*/
+    padding-left:0.4rem
+}
+
+.md-message{
+    font-size:0.65rem;
+    width:65%; 
+    list-style:none; 
+    text-align:left;
+    border-bottom:initial;
+    max-height:2.4rem; 
+    overflow:auto;
+    
+    position: absolute;
+    min-height: 2.4rem;
+}
+.md-programmation{
+    border-bottom-color: rgb(19, 183, 19) !important;
+    border-bottom-style:solid;
+}
+
+.toto{
+    position:absolute;
+    z-index: 500;
+    width: 66.66%;
+    left:0;
+    top:0;
+    height: 100%;
+}
+
+.md-gpio{
+    background-color:#859900;
+    color:#fff;
+    font-size:0.65rem;
+}
+.md-uart{
+    background-color:#6c71c4;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+.md-inputio{
+    background-color: #dc8335;
+    color:#fff;
+    font-size:0.65rem;
+}
+.md-outputio{
+    background-color: #aa35dc;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+.md-smallfont{
+    font-size: 0.65rem;
+}
+.md-pcm{
+    background-color: #2aa198;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+.md-uart{
+    background-color: #6c71c4;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+.md-spi{
+    background-color: #d33682;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+.md-i2c{
+    background-color: #268bd2;
+    color:#fff;
+    font-size:0.65rem;
+}
+
+td{
+    padding:0rem!important;
+}
+.btn-sm{
+    width: 5rem;
+    text-align: left;
+}
+
+.md-test,.md-status{
+    font-size:0.65rem;
+    color:#fff;
+
+}
+.md-test{
+    background-color: #1f8c1b;
+}
+.md-status{
+    background-color: #aa35dc;
+}

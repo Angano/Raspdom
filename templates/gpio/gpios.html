@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto ">
+        <h4 class="alert alert-light">Listes des Gpios</h4>
+        <table class="table bg-light">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Mode</th>
+                    <th>Valeur</th>
+                    <th>Appareil</th>
+                    <th>Info</th>
+                </tr>
+            </thead>
+            <tbody>{% for gpio in gpio_list %}
+                <tr>
+                    <td>{{gpio.nom}}</td>
+                    <td>{{gpio.mode}}</td>
+                    <td>{{ gpio.valeur}}</td>
+                    <td>{{ gpio.appareil.nom}}</td>
+                    <td>{{ gpio}} - {{ gpio.info}}</td>
+                    <td>{{gpio.gpio_user_in.alt_fct_name_other}}</td>
+
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

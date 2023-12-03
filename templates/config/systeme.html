@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto bg-light">
+         <h6>Système</h6>
+    </div>
+</div>
+
+
+
+<div class="row justify-content-center">
+    <div class="col-5  bg-light">
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Stauts</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Heure</td>
+                <td id="heure_systeme"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>tps sonde</td>
+                <td><input type="text" name="temps_sonde" id="temps_sonde" value="{{status.update_temp['valeur']}}"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="forcage_maj">Forcage mis à jour</label> </td>
+                <td><input type="checkbox" name="forcage_maj" id="forcage_maj" {% if status.update_temp['status'] == true %} checked {% endif %}></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Selection bdd</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Bdd distante</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Com distante</td>
+                <td></td>
+                <td></td>
+            </tr>
+             <tr>
+                <td>Status pyApp</td>
+                <td></td>
+                <td></td>
+            </tr>
+             <tr>
+                <td>On/Off PyApp</td>
+                <td></td>
+                <td></td>
+            </tr>
+               <tr>
+                <td>Log Supervisor</td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-5  bg-light">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Stauts</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+
+                    <td id="getversion">Version raspberry
+                        <ul>
+                            <li>Model and PCB Revision: {{status.getversion.raspberry_version | safe }}</li>
+                            <li>Ram: {{status.getversion.ram }}</li>
+                            <li>Révision: {{status.getversion.revision }}</li>
+                            <li>Status: {{status.getversion.version_gpio }}</li>
+                            <li>Pi Revision Code from cpuinfo : {{status.getversion.cpu_info }}</li>
+                            <li>Gpio for init:{{status.getversion.gpio_for_init}}</li>
+
+                        </ul>
+
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10 mx-auto bg-light">
+        <h3><a href="https://pinout.xyz/" target="_blank">https://pinout.xyz/</a></h3>
+        {{status.getversion.my_gpio_1 }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mx-auto bg-light d-flex">
+
+        {% if  status.getversion.banck_gpio_1 %}
+        <table class="table" style="font-size:10px">
+            {% for gpio in status.getversion.banck_gpio_1 %}
+        <tr>
+            <td>{{gpio[8]}}</td>
+            <td>{{gpio[7]}}</td>
+            <td>{{gpio[6]}}</td>
+            <td>{{gpio[5]}}</td>
+            <td>{{gpio[4]}}</td>
+            <td>{{gpio[3]}}</td>
+            <td>{{gpio[2]}}</td>
+            <td><span class="btn btn-sm {{gpio[10]}}">{{gpio[1]}}</span></td>
+            <td><span class="btn btn-sm {{gpio[9]}}">{{gpio[0]}}</span></td>
+        </tr>
+        {% endfor %}
+        </table>
+        <table class="table" style="font-size:10px">
+            {% for gpio in status.getversion.banck_gpio_2 %}
+        <tr>
+            <td><span class="btn btn-sm {{gpio[9]}}">{{gpio[0]}}</span></td>
+            <td><span class="btn btn-sm {{gpio[10]}}">{{gpio[1]}}</span></td>
+            <td>{{gpio[2]}}</td>
+            <td>{{gpio[3]}}</td>
+            <td>{{gpio[4]}}</td>
+            <td>{{gpio[5]}}</td>
+            <td>{{gpio[6]}}</td>
+            <td>{{gpio[7]}}</td>
+
+            <td></td>
+        </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    csrf = "{{csrf_token()}}"
+
+</script>
+
+<script src="{{url_for('static', filename='js/system.js')}}"></script>
+
+{% endblock %}

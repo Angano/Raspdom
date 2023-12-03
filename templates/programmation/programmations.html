@@ -1,0 +1,107 @@
+
+{% extends 'base.html' %}
+{% set days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'] %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto  bg-light">
+        <div class="d-flex justify-content-between mt-2">
+            <h4>Listes des programmations</h4>
+            <a class="btn btn-sm btn-secondary" style="font-size:0.8rem; border:solid 1px grey" href="{{url_for('add_programmation')}}">+ Programmation</a>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 g-4 my-5">
+            {% for programmation in programmations %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-between">{{programmation.nom}} - Status: {{programmation.get_programmations()}}</h5>
+                        </div>
+                        <div>
+                            <ul>
+                                {% for data in programmation.programmations %}
+                                <li>{{days[data.day-1]}} - {{data.start}} - {{data.end}}<a href="{{ url_for('edit_programmation',programmation_id=data.id) }}">Edit</a></li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+</div>
+
+
+{#
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for value in programmations %}
+
+  <div class="col">
+    <div class="card">
+        <div class="card-body">
+        <h5 class="card-title d-flex justify-content-between">{{value[0].nom}}
+
+            <div data-appareil="{{value[0].id}}" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-success" style="font-size:0.70rem">Add </div></h5>
+
+
+
+      </div>
+        <table class="table-responsive-md" >
+            <tr>{% for data in datasH %}<td style="width:5px" colspan="4" title="{{data}}" >{{data.strftime('%H')}}</td>{% endfor %}</tr>
+            <tr>{% for data in datas %}
+                <td title="{{data}}" style="width:5px;border:1px solid gray;font-size:5px; height:15px;
+                background-color:{% if data>=datasFake.start and data<=datasFake.end %}green{%else%} red {% endif %}"></td>
+                {% endfor %}</tr>
+
+        </table>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+    {% endfor %}
+</div>
+#}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel" data-md-appareil=""></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body" id="md-modal-body">
+        ...
+      </div>
+
+      <div class="modal-footer" id="md-modal-footer">
+          <span id="md-modal-btn1" class="btn btn-sm btn-success"></span>
+          <span id="md-modal-btn2" class="btn btn-sm btn-primary" style="display:none"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+{% block script %}
+<script>
+    csrf = "{{csrf_token()}}"
+
+</script>
+<script src="{{url_for('static', filename='js/programmations.js')}}"></script>
+
+{% endblock %}

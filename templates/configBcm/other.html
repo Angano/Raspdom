@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-10 bg-light mx-auto">
+            <h6>Other</h6>
+            <table class="table">
+                <thead>
+                <tr>
+
+                    <th>Name</th>
+                    <th>alt_fct_name</th>
+                    <th>alt_fct_name_other</th>
+                    <th>Mode</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in datas %}
+                <tr>
+
+                    <td>{{data.name}}</td>
+                    <td>{{data.alt_fct_name}}</td>
+                    <td>{% if data.alt_fct_name_other and False%} {{data.alt_fct_name_other}}  {%else%}
+                        <form id="form-{{data.id}}" action="" method="post" >
+                            
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <input type="hidden" name="gpio" value="{{data.id}}">
+                            <span>
+                                <label for="relais_{{data.id}}">Name </label>
+                                <input data-input="" type="text" name="name" value="{{data.alt_fct_name_other}}"
+                                id="relais_{{data.id}}">
+                                
+                            </span>
+                            <span data-edit="{{data.id}}">&#9998;</span>
+
+                            <span data-delete="{{data.id}}">&#128473;</span>
+                            <input type="submit" value="sub">
+
+                        </form>
+
+                       
+                        {% endif%}
+                    </td>
+                    <td>{{data.mode}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div>
+        <form action="" method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="text" name="maurice" value="oo">
+            <input type="submit" value="ff">
+        </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>var CSRF_TOKEN = '{{ csrf_token() }}';</script>
+<script type=text/javascript src="{{url_for('static',filename='js/configBcm_other.js')}}"></script>
+{% endblock %}

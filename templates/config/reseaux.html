@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10 mx-auto alert alert-secondary" style="font-size:0.8rem">
+        <h4>Réseaux</h4>
+        <div>
+            <table class="table" >
+                <thead>
+                    <tr>
+                        <th>IN-USE</th>
+                        <th>BSSID</th>
+                        <th>SSID</th>
+                        <th>MODE</th>
+                        <th>CHAN</th>
+                        <th>RATE</th>
+                        <th>SIGNAL</th>
+                        <th>BARS</th>
+                        <th>SECURITY</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+               {% for line in wifi %}
+                <tr>
+                    <td>{% if line[0] =='*' %}
+                            <span data-ssid="{{line[2]}}" data-ordre="disconnect" class="btn btn-sm btn-warning" style="font-size:0.8rem">Disconnect</span>
+                        {% else %}
+                            <span data-ssid="{{line[2]}}" data-ordre="connect" class="btn btn-sm btn-dark" style="font-size:0.8rem">Connect</span>
+                        {% endif %}</td>
+                    <td>{{line[1]}}</td>
+                    <td>{{line[2]}}</td>
+                    <td>{{line[3]}}</td>
+                    <td>{{line[4]}}</td>
+                    <td>{{line[5]}}</td>
+                    <td>{{line[6]}}</td>
+                    <td {% if line[0] =='*' %} style="color:green" {% endif %}>{{line[7]}}</td>
+                    <td>{{line[8]}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <button style="float:right"><img src="{{url_for('static', filename='assets/wps.png')}}" width="60px" high="auto" alt=""></button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-m10 mx-auto">
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    csrf = "{{csrf_token()}}"
+
+</script>
+<script src="{{url_for('static', filename='js/reseaux.js')}}"></script>
+
+{% endblock %}

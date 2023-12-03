@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="" method="post">
+{{form.hidden_tag()}}
+   Début: {{form.start}}h{{form.start_min}}=>Fin: {{form.end}}h{{form.end_min}}
+    <br>
+    Jour: {{form.day}}
+    <br>
+    <input type="text" name="appareil" id="" value="{{appareil_id}}">
+
+    <br>
+    <input type="submit" value="VALIDE">
+    
+</form>
+
+{% endblock %}

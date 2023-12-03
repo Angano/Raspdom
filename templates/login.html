@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mx-auto  bg-light">
+        <h4>Login</h4>
+        <form action="" method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+            <p>{{loginform.username.label}} {{loginform.username}}</p>
+            <ul>
+                {% for error in loginform.username.errors %}
+                <li>{{error}}</li>
+                {% endfor %}
+            </ul>
+            <p>{{loginform.password.label}} {{loginform.password}}</p>
+            <ul>
+                {% for error in loginform.password.errors %}
+                <li>{{error}}</li>
+                {% endfor %}
+            </ul>
+            <p style="text-align:center"><input type="submit"></p>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

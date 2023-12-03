@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-5 mx-auto alert alert-primary">
+        <h2>Mise à jour - {{appareil.nom}} - {{appareil.label}}</h2>
+
+        <form action="" method="post">
+
+           {{ form.csrf_token }}
+            <p>{{form.nom.label}} {{form.nom}}</p>
+            <p>{{form.description.label}} {{form.description}}</p>
+
+            {% if appareil.sonde_id %}
+            <p>{{form.sonde_id.label}} {{form.sonde_id}}</p>
+            <p>{{form.sonde_actived.label}} {{form.sonde_actived}}</p>
+            {% endif %}
+            <hr>
+
+            <input type="submit" value="Enregistrer">
+        </form>
+
+    </div>
+    <div class="col-5 mx-auto alert alert-primary">
+        <h2>Gpio</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Mode</th>
+                    <th>Valeur</th>
+                    <th>Info</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for gpio in appareil.gpios %}
+              <tr>
+                  <td>{{gpio.id}}</td>
+                  <td>{{gpio.nom}}</td>
+                  <td>{{gpio.mode}} </td>
+                  <td>{{gpio.valeur}}</td>
+                  <td>{{gpio.info}}</td>
+                  <td></td>
+              </tr>
+
+        {% endfor %}
+            </tbody>
+        </table>
+
+        <p>{{appareil.order_gpio}}</p>
+        <hr>
+        <b>composants</b>
+        <hr>
+        <div class="d-flex">
+            {#
+            {% for composant in appareil.composants %}
+        <div class="card">
+
+            <p class="card-header">{{composant.description}}</p>
+            <p>{{composant.emplacement}}</p>
+            <p>{{composant.categoriecomposant}}</p>
+        </div>
+
+            {% endfor %}#}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

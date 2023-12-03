@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10 mx-auto alert alert-secondary">
+        <h4>Listes des capteurs</h4>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Modèle</th>
+                <th>Description</th>
+                <th>Emplacement</th>
+                <th>categorie en bdd</th>
+                <th>Valeur</th>
+                <th>Valeur 2</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                    {% for composant in composants %}
+        <tr>
+            <td>{{composant.id}}</td>
+            <td>{{composant.modele}}</td>
+            <td>{{composant.description}}</td>
+            <td>{{composant.emplacement}}</td>
+            <td>{{composant.categoriecomposant}}</td>
+
+            <td data-composant-id-td="{{composant.id}}"><span data-composant-id="{{composant.id}}">{{composant.valeur}}</span> {{composant.unite}}</td>
+            <td data-composant-id-td="{{composant.id}}"><span data-composant-id="{{com}}">{{composant.valeur2}}</span> {{composant.unite2}}</td>
+<td>{{composant.compteur}}</td>
+            <td>
+                <a  href="{{url_for('composant_delete',id=composant.id)}}" class="btn btn-sm btn-primary">Delete</a>
+                <a  href="{{url_for('composant_edit',id=composant.id)}}" class="btn btn-sm btn-primary">Edit</a>
+                <a  href="#" class=""><span class="unicode" data-composant_id=[{{composant.id}}] data-bs-toggle="modal" data-bs-target="#exampleModal">&#128202;</span></a>
+            </td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " style="max-width:75%!important">
+      <div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h1 class="modal-title fs-5" id="exampleModalLabel" data-md-appareil="">
+              Modèle: <span id="modele"></span>
+            </h1>
+                <div>
+                    <b>Description:</b> <span id="description"></span>
+                </div>
+
+                <div>
+                    <b>Emplacement: </b>
+                    <span id="emplacement"></span>
+                </div>
+            </div>
+
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body" id="md-modal-body">
+
+            <div class="d-flex justify-content-around">
+            <div>
+               <label for="date_depart">De</label>
+               <input type="text" name="date_depart" id="date_depart">
+            </div>
+            <div>
+                <label for="date_fin">à</label>
+            <input type="text" name="date_fin" id="date_fin">
+            </div>
+                <div>
+                    <label for="interval">Interval</label>
+                    <select name="interval" id="interval">
+                        <option value="">1 minute</option>
+                        <option value="">10 minutes</option>
+                        <option value="">1 heure</option>
+                        <option value="">12 heure</option>
+                        <option value="">24 heures</option>
+                        <option value="">1 semaine</option>
+                    </select>
+                </div>
+        </div>
+           <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="modal-footer" id="md-modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{{url_for('static', filename='js/composants.js')}}"></script>
+{% endblock %}

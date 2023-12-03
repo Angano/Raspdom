@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <meta name="referrer" content="origin" />
+        <title>Bare - Start App RaspDom</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{{url_for( 'static', filename='assets/favicon.ico')}}" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+        <link href="{{ url_for('static', filename='css/md.css') }}" rel="stylesheet" />
+        <link href="{{ url_for('static', filename='css/media_query.css') }}" rel="stylesheet" />
+        {% block style %}
+        {% endblock %}
+    </head>
+    <body class="w-100" style="overflow:hidden; height:100vh">
+
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3" id="md-nav-bar-top"  >
+            <div class="d-flex justify-content-between w-100" id="md-header">
+                <div>
+<button id="btnctr" class="navbar-toggler" type="button" data-bs-toggle="collapse"  aria-controls="md-nav-left" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                     <a class="navbar-brand" href="{{url_for('index')}}">
+                <span class="h3">RaspDom</span></a>
+
+                </div>
+
+                <div class="d-flex justify-content-end" style="align-items:center">
+
+                    <div class="" id="navbarSupportedContent" style="flex-grow:0; font-size:0.8rem">
+                        <ul class="d-flex bg-dark ms-auto mb-2 mb-lg-0" id="md-nav-right">
+                            {% if current_user.is_authenticated %}
+
+                            <li class="nav-item md-mq-dnone" ><a class="{% if request.endpoint=='index' %} md-active {% endif %}"  href="{{ url_for('index')}}">Home</a></li>
+                            <li class="nav-item dropdown md-mq-dnone">
+                                <a class="dropdown-toggle" id="" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li class=""><a class="dropdown-item " aria-current="page" href="{{url_for('user')}}">Add user</a></li>
+                                    <li class=""><a class="dropdown-item " aria-current="page" href="{{url_for('users')}}">Users</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item"><a class="{% if request.endpoint=='profil' %} md-active {% endif %}" href="{{url_for('profil')}}">{{current_user.username}}</a></li>
+
+
+
+                            {% endif %}
+                            <li class="nav-item px-2 md-icon-connect md-mq-dnone"  >
+                                <img width="20" height="20" id="img-wifi" src="{{ url_for('static', filename='assets/wifi.png') }}" style="position:absolute">
+                                <img id="fail-wifi" class="md-connect-fail" width="20" height="20" id="img-fail" src="{{ url_for('static', filename='assets/fail.png') }}">
+                            </li>
+                            <li class="nav-item px-2 md-icon-connect md-mq-dnone">
+                                <img width="20" height="20" id="img-ethernet" src="{{ url_for('static', filename='assets/ethernet.png') }}" style="position:absolute">
+                                <img id="fail-ethernet" class="md-connect-fail" width="20" height="20" src="{{ url_for('static', filename='assets/fail.png') }}">
+                            </li>
+                            <li class="nav-item px-2 md-icon-connect md-mq-dnone">
+                                <img width="20" height="20" id="img-bluetooth" src="{{ url_for('static', filename='assets/bluetooth.png') }}" style="position:absolute">
+                                <img class="md-connect-fail" width="20" height="20"  src="{{ url_for('static', filename='assets/fail.png') }}">
+                            </li>
+                            <li class="" id="dateMachine"></li>
+
+                        </ul>
+                    </div>
+
+                    <div class="nav-item text-light active" id="message_api"></div>
+                </div>
+
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container-fluid px-0 mx-0">
+            <div class="row" style="position:relative; height:100%">
+                {% if current_user.is_authenticated %}
+                <div class="bg-dark col-2" style=" height:100%;" id="part-one">
+                    <ul class="bg-dark  mb-2 mb-lg-0 ps-3" id="md-nav-left">
+                        <li class="nav-item " ><a class=" {% if request.endpoint=='appareils' %} md-active {% endif %}" href="{{ url_for('appareils')}}"><span class="unicode">&#x27A1;</span>&nbsp;&nbsp;Appareils</a></li>
+                        <li class="nav-item" ><a class="  {% if request.endpoint=='composants' %} md-active {% endif %}" href="{{ url_for('composants')}}"><span class="unicode">&#x27A1;</span>&nbsp;&nbsp;Composants</a></li>
+                        <li class="nav-item" ><a class="  {% if request.endpoint=='liste_programmations' %} md-active {% endif %}" href="{{ url_for('liste_programmations')}}"><span class="unicode">&#8987;</span> Programmations</a></li>
+                        <li class="nav-item" ><a class="  {% if request.endpoint=='liste_programmations' %} md-active {% endif %}" href="{{ url_for('compteurs')}}"><span class="unicode">🧮</span> Compteurs</a></li>
+
+                        <hr class="bg-light">
+                        <li class="nav-item" ><a class="{% if request.endpoint=='composant' %} md-active {% endif %}" href="{{ url_for('composant')}}"><sapan class="unicode">&#9874;</sapan> + Elément </a></li>
+                        <hr class="bg-light">
+                        <li class="nav-item" ><a class="{% if request.endpoint=='sondes' %} md-active {% endif %}" href="{{ url_for('sondes')}}"><span class="unicode">&#128064;</span>&nbsp;&nbsp;Sondes</a></li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='gpios' %} md-active {% endif %}" href="{{ url_for('gpios')}}"><span class="unicode">&#x21C4; </span>&nbsp;&nbsp;GPIOs</a></li>
+                        <hr class="bg-light">
+                        <li class="nav-item text-light" style="list-style:none">Configuration</li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='configBcm' %} md-active {% endif %}" href="{{ url_for('configBcm')}}"><span class="unicode">&#9000;</span> Bcm</a></li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='configBcm_other' %} md-active {% endif %}" href="{{ url_for('configBcm_other')}}"><span class="unicode">&#9000;</span> Bcm ohters</a></li>
+
+                        <li class="nav-item" ><a class="{% if request.endpoint=='config_reseaux' %} md-active {% endif %}" href="{{ url_for('config_reseaux')}}"><span class="unicode">&#128423;</span>&nbsp;&nbsp;Réseaux</a></li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='configSystem' %} md-active {% endif %}" href="{{ url_for('configSystem')}}"><span class="unicode">&#127744;</span>&nbsp;&nbsp;Système</a></li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='tempo' %} md-active {% endif %}" href="{{ url_for('tempos')}}"><span class="unicode">&#10227;</span>&nbsp;&nbsp;Tempos</a></li>
+                        <hr class="bg-light">
+                        <li class="nav-item text-light" style="list-style:none">DashBoard</li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='api_graph_temp_sonde' %} md-active {% endif %}" href="{{ url_for('dashboard_graph_temp_sonde')}}"><span class="unicode">&#128202;</span>&nbsp;&nbsp;Graphs</a></li>
+                        <li class="nav-item" ><a class="{% if request.endpoint=='test_api_graph_temp_sonde' %} md-active {% endif %}" href="{{ url_for('test_dashboard_graph_temp_sonde')}}"><span class="unicode">&#128202;</span>&nbsp;&nbsp;Graphs</a></li>
+                        <hr class="bg-light">
+                        <li class="nav-item"><a class="" aria-current="page" href="{{url_for('logout')}}"><span class="unicode">&#x23FB;</span>&nbsp;&nbsp;Logout</a></li>
+
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="px-0 col" style="{% if current_user.is_authenticated %} {% endif %}position:relative;overflow-x:hidden;height:100%" id="part-twoo">
+                    <img id="img-bck" src="{{ url_for('static', filename='assets/domo.jpg') }}">
+                     {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                    <div class="row">
+                        <div class="col-12 bg-light">
+                            <ul class="mx-4">
+                                {% for message in messages %}
+                                <li class="">{{message}}</li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+                        {% endif %}
+                    {% endwith %}
+                    <div style="overflow:auto; height:100%">
+
+
+                    <div style="position:relative;">
+                        <div class="py-3 pe-3">
+
+                            {% block content %}
+                        {% endblock %}
+                        </div>
+
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+ <div id="md-footer" class="bg-dark text-light text-center"><span style="line-height:2; font-size:0.8rem">Développé par Matthieu Duprat</span></div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog " style="max-width:75%!important">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel2" data-md-appareil=""></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body" id="md-modal-body2">
+          ...
+        </div>
+  
+        <div class="modal-footer" id="md-modal-footer2">
+           
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <!-- Bootstrap core JS-->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    {% block script %}
+
+    {% endblock %}
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    </body>
+</html>

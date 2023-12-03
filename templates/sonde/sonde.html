@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-4 g-4">
+
+        {% for ds1820b in sondes %}
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Nom:  {{ds1820b.nom}}</div>
+            <div class="card-body">
+
+                <p>Info: <span class="badge text-light bg-dark">{{ds1820b.info}}</span></p>
+                <p > Valeur actuelle: <span data-sondeId="{{ds1820b.sonde_valeur_id.id}}">{{ds1820b.sonde_valeur_id.valeur}} °C</span></p>
+                <p>Type: {{ds1820b.type_sonde}}</p>
+                <p>Présente: {{ds1820b.present}}</p>
+                <p><button data-sonde-id="{{ds1820b.id}}" class="btn btn-sm btn-secondary">En service </button>: <span>{{ds1820b.en_service}}</span></p>
+            </div>
+            <div class="card-footer text-end d-flex justify-content-between">
+                <form action="{{url_for('api_delete_sonde')}}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                    <input type="hidden" name="sonde" value="{{ds1820b.id}}">
+                    <input type="submit" value="Supprimer" class="btn btn-sm btn-danger">
+                </form>
+               <a class="btn btn-sm btn-primary" href="{{url_for('edit_sonde',sonde_id=ds1820b.id)}}">Edition</a>
+            </div>
+        </div> </div>
+    {% endfor %}
+
+
+</div>
+
+
+{% endblock %}
+{% block script %}
+    <script>
+        csrf = "{{csrf_token()}}"
+    </script>
+    <script src="{{url_for('static',filename='js/sonde.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,133 @@
+ <div class="row">
+        <div class="col-md-12" style="font-size:0.8rem">
+                    <hr>
+            <h6>Test</h6>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th>composant</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                         <th>Valeur</th>
+                        <th>Session</th>
+                        <th>Consigne</th>
+                        <th>Valeur Cumulée</th>
+                        <th>Actived</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for valeur in instance.modelAppareil.valeur_id %}
+                        <tr>
+
+                            <td>{{valeur.titi.modele}}</td>
+
+                            <td>{{valeur.min}}</td>
+                            <td>{{valeur.max}}</td>
+                            <td class="" data-composant-id-td="{{valeur.id}}">
+                                <span>{{valeur.val}}</span> <span>{{valeur.unite}}</span>
+                            </td>
+                            <td>
+                                 <span data-composant-id-val="{{valeur.id}}">{{valeur.titi.valeur2}}</span> {{valeur.titi.unite}}
+                            </td>
+                            <td>
+                                <input class="md-input" type="hidden" data-valeur-id="{{valeur.id}}"  data-composant-id="{{valeur.id}}" name="consigne" readonly value="{{valeur.consigne}}" placeholder="{{valeur.val}}">
+                                <span style="display:inline-block;min-width:3rem">{{valeur.consigne}}</span></td>
+
+                            <td>
+                                <span data-composant-id-valeur_cumule="{{valeur.id}}">{{valeur.valeur_cumule}}</span> {{valeur.titi.unite}}
+                                <span data-composant-id-reset="{{valeur.id}}"class="btn btn-sm btn-success" style="font-size:0.5rem">Reset</span>
+                            </td>
+                             <td data-composant-id-actived="{{valeur.id}}"><span>{{valeur.actived}}</span>
+                                <span data-composant-id-actived="{{valeur.id}}"class="btn btn-sm btn-success" style="font-size:0.5rem">Toggle</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+<div class="row" style="display:none;font-size:0.8rem" data-composants="{{instance.modelAppareil.id}}">
+
+
+    <div class="col-md-10 mx-auto d-flex justify-content-between" id="composants_display">
+        {% for valeur in instance.modelAppareil.valeur_id %}
+        <p>{{valeur.val}} {{valeur.unite}}</p>
+
+        <div>
+            <p>{{valeur.titi.description}}</p>
+            <p>{{valeur.titi.categoriecomposant}} - {{valeur.titi.emplacement}}</p>
+
+            <hr>
+            <table class="table">
+                <thead>
+                <tr><td>Elément</td><td>Valeur</td></tr>
+                </thead>
+
+                <tbody>
+                <tr><th>Composant</th>
+                    <td class="" data-composant-id-td="{{valeur.titi.id}}">
+                        <span data-composant-id="{{valeur.titi.id}}">{{valeur.titi.valeur}}</span> {{valeur.titi.unite}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Session</th>
+                    <td>
+                        <span data-composant-id-val="{{valeur.titi.id}}">{{valeur.val}}</span> {{valeur.unite}}</td>
+                </tr>
+                <tr>
+                    <th>Consigne</th>
+                    <td>
+                        <input class="md-input" type="hidden" data-valeur-id="{{valeur.id}}"  data-composant-id="{{valeur.titi.id}}" name="consigne" readonly value="{{valeur.consigne}}" placeholder="{{valeur.val}}">
+                        <span style="display:inline-block;min-width:3rem">{{valeur.consigne}}</span></td></tr>
+                <tr>
+                    <th>Seuil bas</th>
+                    <td>
+                        <input class="md-input" type="hidden" data-valeur-id="{{valeur.id}}"  data-composant-id="{{valeur.titi.id}}" name="min" readonly value="{{valeur.min}}" placeholder="{{valeur.min}}">
+                        <span style="display:inline-block;min-width:3rem">{{valeur.min}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Seuil haut</th>
+                    <td>
+                        <input class="md-input" type="hidden" data-valeur-id="{{valeur.id}}"  data-composant-id="{{valeur.titi.id}}" name="max" readonly value="{{valeur.max}}" placeholder="{{valeur.max}}">
+                        <span style="display:inline-block;min-width:3rem">{{valeur.max}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Valeur cumulée</th>
+                    <td>
+                        <span data-composant-id-valeur_cumule="{{valeur.titi.id}}">{{valeur.valeur_cumule}}</span> {{valeur.titi.unite}}
+                        <span data-composant-id-reset="{{valeur.titi.id}}"class="btn btn-sm btn-success" style="font-size:0.5rem">Reset</span>
+                    </td></tr>
+                <tr><th>Activé</th>
+                    <td data-composant-id-actived="{{valeur.titi.id}}"><span>{{valeur.actived}}</span>
+                        <span data-composant-id-actived="{{valeur.titi.id}}"class="btn btn-sm btn-success" style="font-size:0.5rem">Toggle</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="row" style="font-size:0.8rem">
+    <hr>
+    <div class="col-10 justify-content-between mx-auto d-flex">
+        <p><b>Régulation sur:</b></p>
+        {% for valeur in instance.modelAppareil.valeur_id %}
+            <label>{{valeur.titi.categoriecomposant}} - {{valeur.titi.emplacement}}
+                <input type="radio" data-composant-id-td="{{valeur.toto.id}}" name="composant">
+            </label>
+        {% endfor %}
+    </div>
+</div>
+

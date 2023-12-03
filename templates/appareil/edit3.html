@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row">
+    <div class="col-8 mx-auto alert alert-primary">
+        <h2>Ajout d'un appareil</h2>
+
+        <b>{{instance_appareil['repr']}}</b>
+        <form action="" method="post">
+
+           {{ form.csrf_token }}
+            <input type="hidden" name="appareil" value="{{instance_appareil.label}}">
+            <p>{{form.nom.label}} {{form.nom}}</p>
+            <p>{{form.description.label}} {{form.description}}</p>
+
+
+
+            <hr>
+            <div class="d-flex">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+
+                    {% for data in form.gpios %}
+                    <div class="col">
+                        <div class="card">
+                            {{data}}
+                        </div>
+                        </div>
+            {% endfor %}
+                    </div>
+            </div>
+
+             {% if instance_appareil['objet'].sonde %}
+            <hr>
+                <div>
+                    {{form.sonde_id.label}} {{form.sonde_id}} / {{form.sonde_actived.label}} {{form.sonde_actived}}
+                </div>
+            {% endif %}
+
+            {% if instance_appareil['objet'].tempo %}
+            <hr>
+                <div>
+                    {{form.sonde_id.label}} {{form.sonde_id}} / {{form.sonde_actived.label}} {{form.sonde_actived}}
+                </div>
+            {% endif %}
+            <hr>
+            {% if instance_appareil['objet'].composant %}
+            <h6>Composant</h6>
+            <p>{{instance_appareil['objet'].composant_categorie}}</p>
+            <div class="d-flex">
+
+
+
+
+
+
+            </div>
+
+             <div class="d-flex justify-content-around">
+                 {% for categorie in instance_appareil['objet'].composant_categorie %}
+                <div>
+                    <p><b>{{categorie}}</b></p>
+                    {% for composant in composants if composant.description==categorie %}
+                    <div>
+                        <label for="composant_{{composant.id}}">{{composant.emplacement}} - {{composant.categoriecomposant}}
+                            <input type="radio" id="composant_{{composant.id}}" name="composant_{{composant.description}}" value="{{composant.id}}">
+                        </label>
+                    </div>
+                    {% endfor %}
+                 </div>
+            {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+
+
+            <input type="submit" value="Enregistrer">
+        </form>
+
+    </div>
+    </div>
+
+
+<div class="row">
+    <div class="col-8 mx-auto alert alert-primary">
+        {{instance_appareil.objet.tempo}}
+    </div>
+</div>
+
+{% endblock %}
+
+    {% block script %}
+<script src="{{url_for('static',filename='js/appareil.js')}}"></script>
+{% endblock %}

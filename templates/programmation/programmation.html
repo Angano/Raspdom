@@ -1,0 +1,83 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <ul>
+            {% for programmation in programmations if programmations %}
+            <li>{{programmation.appareil_programmation.nom}} {{programmation.day}} {{programmation.start}}:->{{programmation.end}}:{{programmation.end}} <span style="font-weight:bold;color:red;">X</span></li>
+            {% endfor %}
+        </ul>
+
+    </div>
+    <div class="col-md-7 mx-auto  bg-light">
+        <h3>Création programmation</h3>
+            <form action="" method="post">
+                {{programmationform.csrf_token}}
+                <div class="d-flex m-2 p-2">
+                     <div class="d-flex flex-column mx-1">
+                        <div>Début</div>
+                        <div>{{programmationform.start}} </div>
+                     </div>
+                     <div class="d-flex flex-column mx-1">
+                        <div>Fin</div>
+                        <div>{{programmationform.end}} </div>
+                    </div>
+                </div>
+
+
+                    <div class="m-2 p-2">
+                        Journée : {{programmationform.day}}
+                    </div>
+                    <div class="m-2 p-2">
+                        Appareil: {{programmationform.appareil_id}}
+                    </div>
+
+
+
+
+                <input type="submit">
+            </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    var hStart = document.getElementById('start');
+    var mStart = document.getElementById('start_min');
+    var hEnd = document.getElementById('end');
+    var mEnd = document.getElementById('end_min');
+
+    
+
+    var heureOptions =[];
+    for(i=0;i<24;i++){
+        var option = document.createElement('option');
+        option.setAttribute('value',i)
+        option.innerText = i;
+        heureOptions.push(option);
+    }
+
+    hStart.addEventListener('change',function(e){
+        hEnd.innerHTML = '';
+        if(e.target.value!='23'){
+            console.log(typeof(e.target.value));
+            heureOptions.slice(parseInt(e.target.value)+1).forEach(element=>{
+                hEnd.appendChild(element);
+            })
+            document.getElementById('end').children[0].selected = true;
+        }else{
+            heureOptions.slice(23).forEach(element=>{
+                hEnd.appendChild(element);
+            })
+        }
+        
+       
+        
+        
+            
+
+    })
+</script>
+{% endblock %}

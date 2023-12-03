@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-10 mx-auto">
+        <div class="card">
+            <div class="card-header">Edition de la sonde {{sonde.nom}}</div>
+            <div class="card-title"></div>
+            <div class="card-body">
+                <p class="card-text"> Valeur de la sonde :{{sonde.sonde_valeur_id.valeur}}</p>
+    <form action="" method="post">
+        {% for field in sondeform %}
+        <p>{{field.label}} {{field}}</p>
+
+        {% endfor %}
+        <input type="submit">
+
+    </form>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+{% endblock %}

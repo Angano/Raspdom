@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<<div class="row">
+    <div class="col-md-10 mx-auto alert alert-secondary">
+        <h4>Graphiques</h4>
+        <div class="d-flex">
+            <div>
+               <label for="date_depart">De</label>
+               <input type="text" name="date_depart" id="date_depart">
+            </div>
+            <div>
+                <label for="date_fin">De</label>
+            <input type="text" name="date_fin" id="date_fin">
+            </div>
+                <div>
+                    <label for="interval">Interval</label>
+                    <select name="interval" id="interval">
+                        <option value="">1 minute</option>
+                        <option value="">10 minutes</option>
+                        <option value="">1 heure</option>
+                        <option value="">12 heure</option>
+                        <option value="">24 heures</option>
+                        <option value="">1 semaine</option>
+                    </select>
+                </div>
+        </div>
+
+              
+                <canvas id="myChart"></canvas>
+          
+    </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{url_for('static',filename='js/graph_test.js')}}"></script>
+{% endblock %}

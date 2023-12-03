@@ -1,0 +1,120 @@
+.card-body{
+    /*min-height: 335px;
+    min-height:120px;*/
+}
+.md-status{
+    /*top:345px;
+    top:135px;*/
+}
+.md-panel{
+    margin-top:0.4rem;
+    margin-right: 0.4rem;
+    margin-left: 0.4rem;
+    height: min-content;
+}
+/*
+input{
+background-color:transparent;
+}
+*/
+.chart{
+   /* position: absolute;
+    z-index: 5;
+    top:7.5rem;*/
+}
+/* affichage des programmations */
+.programmations{
+    display:none;
+    width:80%;
+    position:absolute;
+    left:10%;
+    top:115px;
+    z-index:10;
+    background-color:white;
+    border:solid 1px grey;
+}
+[data-targethistogramme]{
+    cursor:pointer;
+}
+input[type='range']{
+    cursor:pointer;
+}
+
+.md-min{
+ outline:none;
+}
+.md-min:focus{
+ box-shadow: 0 0 14px #719ECE;
+}
+
+.md-max{
+ outline:none;
+}
+
+.md-max:focus{
+ box-shadow: 0 0 14px #dc3545;
+}
+
+
+@media screen and (max-width:803px){
+    .card-body{
+        /*min-height: 334px;*/
+        top:8rem;
+    }
+    .chart{
+        top: 12rem;
+        width: 97%;
+    }
+    #part-one{
+        position:absolute;
+        z-index:500;
+        width:46%!important;
+        height:100vh;
+        display:none;
+    }
+    #part-twoo{
+        position:relative;
+        width:100%!important;
+    }
+
+    #md-nav-right{
+    flex-direction:row;
+    }
+
+
+    #btnctr{
+    font-size:25px;
+    border:none}
+
+    #md-nav-bar-top{
+        height:12%
+    }
+    .container-fluid{
+        height:84%;
+    }
+    #md-footer{
+        height:7%
+    }
+
+    @media screen and (max-width:573px){
+        #md-header{
+            flex-direction:column;
+            height:initial;
+        }
+
+        #md-nav-bar-top{
+            height:initial;
+        }
+        .md-mq-dnone{
+            display:none
+            }
+
+        #part-one{
+
+            width:60%!important;
+
+    }
+    }
+
+}
+

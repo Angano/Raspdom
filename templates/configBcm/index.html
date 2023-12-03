@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block style %}
+    <style>
+        .btn:hover, btn-sm:hover{
+            cursor: default;
+        }
+
+        #gpios .btn, #gpios btn-sm,#gpios p,#gpios span{
+        font-size:0.75rem;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto bg-light">
+        {{mode_run.status}}
+        <form id="form-status_run" action="" method="post" >
+                        
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <label for="run">Run</label>
+            <input  data-input="" type="radio" name="run" value="1" id="run" {% if mode_run.status %} checked {% endif %}>
+            <label for="stop">Stop</label>
+            <input  data-input="" type="radio" name="run" id="stop" value="0" {% if not mode_run.status %} checked {% endif %}>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="row bg-light">
+
+    <div class="col-12">
+        <table class="table" style="font-size:0.65rem">
+            <thead>
+                <tr>
+                    <th>Name - Status</th>
+                    <th>Ordre</th>
+                    <th>Mode</th>
+                    <th>Other name</th>
+                    <th>Alt other</th>
+                    <th>Alt0</th>
+                    <th>Alt1</th>
+                    <th>Alt2</th>
+                    <th>Alt3</th>
+                    <th>Alt4</th>
+                    <th>Alt5</th>
+                    <th>Interface</th>
+                    <th>Appareil</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for data in datas_bank3 %}
+            <tr>
+                <td>
+                    <div class="d-flex">
+                        <div class="btn btn-sm {{data.class1}} md-smallfont">{{data.name}}</div>
+                        {% if data.mode=='Input' %}
+                            <div id="read_{{data.id}}" class="md-inputio px-1" style="width:35px"></div>
+                        {% else %}
+                            <div id="read_{{data.id}}" class="md-outputio px-1" style="width:35px"></div>
+                        {%endif %}</div>
+                        </td><td>
+                        {% if data.mode=='Output' %}
+                   
+                        <form id="form-status-{{data.id}}" action="" method="post" >
+                        
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <input type="hidden" name="gpio" value="{{data.id}}">
+                            <div class="d-flex">
+                                <div class="d-flex">
+                                    <label id="label_off_{{data.id}}" class="  {% if not data.write_status %} md-spi {% endif %} p-1  rounded" for="output-on{{data.id}}">Off
+                                        <input data-input="" type="radio" name="mode" value="off" id="output-on{{data.id}}" {% if not data.write_status %} checked {% endif %}>
+                                    </label>
+                                </div>
+                                 <div class="d-flex">
+                                    <label id="label_on_{{data.id}}" class=" {% if  data.write_status %} md-test {% endif %} p-1 rounded" for="output-off{{data.id}}">On 
+                                        <input data-input="" type="radio" name="mode" value="on" id="output-off{{data.id}}"  {% if  data.write_status %} checked {% endif %}>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                        </form>
+                    {% endif %}</div>
+                    </div> </td>
+                <td data-gpio="{{data.name}}"  id="id-{{data.name}}"><span class="btn btn-sm {% if data.mode=='Input' %} md-inputio {% else %} md-outputio {% endif %}" >{{data.mode}}</span> </td>
+                <td>{{data.alt_fct_name_other}}</td>
+                <td>
+                    {% if data.alt_fct_name_other and False%} {{data.alt_fct_name_other}}  {%else%}
+                    <form id="form-{{data.id}}" action="" method="post" >
+                        
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <input type="hidden" name="gpio" value="{{data.id}}">
+                        <span>
+                           
+                            <input data-input="" type="text" name="name" value="{{data.alt_fct_name_other}}"
+                            id="relais_{{data.id}}">
+                            
+                        </span>
+                        
+                    </form>
+
+                   
+                    {% endif%}
+
+                </td>
+                <td><span class="btn btn-sm {{data.class2}}  md-smallfont">{{data.alt_fct_0}}</span></td>
+                <td>{{data.alt_fct_1}}</td>
+                <td>{{data.alt_fct_2}}</td>
+                <td>{{data.alt_fct_3}}</td>
+                <td>{{data.alt_fct_4}}</td>
+                <td>{{data.alt_fct_5}}</td>
+                <td><span class="btn btn-sm {{data.class2}} ">{{data.bus}}</span></td>
+                <td>{% if data.used_in %}<span class="btn btn-sm btn-secondary  md-smallfont" style="cursor:pointer;width:80px"> {{data.used_in[0].appareil.nom}} </span>{% else %}
+                    
+                    
+                 
+                    {% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>var CSRF_TOKEN = '{{ csrf_token() }}';</script>
+<script type=text/javascript src="{{url_for('static',filename='js/configBcm.js')}}"></script>
+{% endblock %}
+
